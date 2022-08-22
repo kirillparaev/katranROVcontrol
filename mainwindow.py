@@ -150,7 +150,7 @@ def inputHandling():
                 state = ui.pad.get_state()
 
 
-        if state.gamepad.buttons & 0b1000000000000000:  # треугольник\Y - поднять робота вверх
+        if state.gamepad.buttons & 0b1000000000000000:  # треугольник\Y - поднять робота вверх (приоритет)
             ui.th_vertical_0 = 0xB4
             ui.th_vertical_1 = 0xB4
         elif state.gamepad.buttons & 0b0001000000000000:  # крестик\A - погрузить робота
@@ -174,14 +174,15 @@ def inputHandling():
             ui.th_horizontal_2 = 0x5A
             ui.th_horizontal_3 = 0x5A
 
-        if state.gamepad.right_trigger:
+        # курки не будут работать вместе с плечиками
+        if state.gamepad.right_trigger and (state.gamepad.buttons & 0b0000000100000000 == 0) and (state.gamepad.buttons & 0b0000001000000000 == 0):
             right_trigger = int((state.gamepad.right_trigger / 255) * 90)
             ui.th_horizontal_0 = (0x5A + right_trigger)
             ui.th_horizontal_1 = (0x5A + right_trigger)
             ui.th_horizontal_2 = (0x5A + right_trigger)
             ui.th_horizontal_3 = (0x5A + right_trigger)
 
-        if state.gamepad.left_trigger:
+        if state.gamepad.left_trigger and (state.gamepad.buttons & 0b0000000100000000 == 0) and (state.gamepad.buttons & 0b0000001000000000 == 0):
             left_trigger = int((state.gamepad.left_trigger / 255) * 90)
             ui.th_horizontal_0 = (0x5A - left_trigger)
             ui.th_horizontal_1 = (0x5A - left_trigger)
