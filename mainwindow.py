@@ -151,8 +151,8 @@ def inputHandling():
 
 
         if state.gamepad.buttons & 0b1000000000000000:  # треугольник\Y - поднять робота вверх
-            ui.th_vertical_0 = 0xFF
-            ui.th_vertical_1 = 0xFF
+            ui.th_vertical_0 = 0xB4
+            ui.th_vertical_1 = 0xB4
         elif state.gamepad.buttons & 0b0001000000000000:  # крестик\A - погрузить робота
             ui.th_vertical_0 = 0
             ui.th_vertical_1 = 0
@@ -161,15 +161,15 @@ def inputHandling():
             ui.th_vertical_1 = 0x5A
 
         if state.gamepad.buttons & 0b0000001000000000:  # R1\RB - поворот вокруг своей оси направо
-            ui.th_horizontal_0 = 0xFF  # вращение боковых движителей в этом и следующем if
-            ui.th_horizontal_1 = 0xFF
+            ui.th_horizontal_0 = 0xB4  # вращение боковых движителей в этом и следующем if
+            ui.th_horizontal_1 = 0xB4
         else:
             ui.th_horizontal_0 = 0x5A
             ui.th_horizontal_1 = 0x5A
 
         if state.gamepad.buttons & 0b0000000100000000:  # L1\LB - поворот вокруг своей оси налево
-            ui.th_horizontal_2 = 0xFF
-            ui.th_horizontal_3 = 0xFF
+            ui.th_horizontal_2 = 0xB4
+            ui.th_horizontal_3 = 0xB4
         else:
             ui.th_horizontal_2 = 0x5A
             ui.th_horizontal_3 = 0x5A
