@@ -19,6 +19,7 @@ class Ui_MainWindow(object):
         self.th_horizontal_1 = 0x5A
         self.th_horizontal_2 = 0x5A
         self.th_horizontal_3 = 0x5A
+        self.isCalibrationNeeded = 0x00
         self.msgFrom = bytearray()
         self.pad = xinput.XInputJoystick(0)
 
@@ -36,8 +37,7 @@ class Ui_MainWindow(object):
         self.labelButtonsPressed.setFont(font)
         self.labelButtonsPressed.setTextFormat(QtCore.Qt.TextFormat.AutoText)
         self.labelButtonsPressed.setScaledContents(False)
-        self.labelButtonsPressed.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop)
+        self.labelButtonsPressed.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeading|QtCore.Qt.AlignmentFlag.AlignLeft|QtCore.Qt.AlignmentFlag.AlignTop)
         self.labelButtonsPressed.setWordWrap(True)
         self.labelButtonsPressed.setObjectName("labelButtonsPressed")
         self.labelSendingPacket = QtWidgets.QLabel(self.centralwidget)
@@ -46,8 +46,7 @@ class Ui_MainWindow(object):
         font.setPointSize(17)
         font.setBold(True)
         self.labelSendingPacket.setFont(font)
-        self.labelSendingPacket.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop)
+        self.labelSendingPacket.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeading|QtCore.Qt.AlignmentFlag.AlignLeft|QtCore.Qt.AlignmentFlag.AlignTop)
         self.labelSendingPacket.setObjectName("labelSendingPacket")
         self.checkBox_Y_btn = QtWidgets.QCheckBox(self.centralwidget)
         self.checkBox_Y_btn.setEnabled(True)
@@ -106,6 +105,12 @@ class Ui_MainWindow(object):
         font.setItalic(False)
         self.label_padNotDetected.setFont(font)
         self.label_padNotDetected.setObjectName("label_padNotDetected")
+        self.labelCalibrating = QtWidgets.QLabel(self.centralwidget)
+        self.labelCalibrating.setGeometry(QtCore.QRect(430, 180, 49, 16))
+        self.labelCalibrating.setObjectName("labelCalibrating")
+        self.checkBoxCalibrationMode = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBoxCalibrationMode.setGeometry(QtCore.QRect(550, 380, 161, 20))
+        self.checkBoxCalibrationMode.setObjectName("checkBoxCalibrationMode")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 726, 22))
@@ -135,7 +140,9 @@ class Ui_MainWindow(object):
         self.packet_6th_byte.setText(_translate("MainWindow", "5A"))
         self.label_LT_L2.setText(_translate("MainWindow", "LT / L2"))
         self.label_RT_R2.setText(_translate("MainWindow", "RT / R2"))
-        self.label_padNotDetected.setText(_translate("MainWindow", ""))
+        self.label_padNotDetected.setText(_translate("MainWindow", "!!! Геймпад не обнаружен !!!"))
+        self.labelCalibrating.setText(_translate("MainWindow", "00"))
+        self.checkBoxCalibrationMode.setText(_translate("MainWindow", "Калибровка гироскопа"))
 
 
 def inputHandling():
@@ -148,7 +155,6 @@ def inputHandling():
             ui.label_padNotDetected.setText("!!! Геймпад не обнаружен !!!")
             while state is None:  # ждем пока пад появится обратно
                 state = ui.pad.get_state()
-
 
         if state.gamepad.buttons & 0b1000000000000000:  # треугольник\Y - поднять робота вверх (приоритет)
             ui.th_vertical_0 = 0xB4
@@ -189,6 +195,16 @@ def inputHandling():
             ui.th_horizontal_2 = (0x5A - left_trigger)
             ui.th_horizontal_3 = (0x5A - left_trigger)
 
+        if (ui.checkBoxCalibrationMode.isChecked()):
+            ui.th_vertical_0 = 0x5A  # 90
+            ui.th_vertical_1 = 0x5A
+            ui.th_horizontal_0 = 0x5A
+            ui.th_horizontal_1 = 0x5A
+            ui.th_horizontal_2 = 0x5A
+            ui.th_horizontal_3 = 0x5A
+            ui.isCalibrationNeeded = 0xFF
+
+
         time.sleep(0.02)  # задержка 4 мс
         getbtnClicks(state)
         ui.packet_1st_byte.setText(str(ui.th_vertical_0))
@@ -201,6 +217,8 @@ def inputHandling():
         ui.packet_5th_byte.setText(str(ui.th_horizontal_2))
         time.sleep(0.001)
         ui.packet_6th_byte.setText(str(ui.th_horizontal_3))
+        time.sleep(0.001)
+        ui.labelCalibrating.setText(str(ui.isCalibrationNeeded))
 
         ui.msgFrom.append(ui.th_vertical_0)
         ui.msgFrom.append(ui.th_vertical_1)
@@ -208,6 +226,7 @@ def inputHandling():
         ui.msgFrom.append(ui.th_horizontal_1)
         ui.msgFrom.append(ui.th_horizontal_2)
         ui.msgFrom.append(ui.th_horizontal_3)
+        ui.msgFrom.append(ui.isCalibrationNeeded)
         time.sleep(0.05)  # задержка 4 мс
         ui.UDPClientSocket.sendto(ui.msgFrom, ui.serverAddressPort)
         ui.msgFrom = bytearray()
@@ -217,6 +236,8 @@ def inputHandling():
         ui.th_horizontal_1 = 0x5A
         ui.th_horizontal_2 = 0x5A
         ui.th_horizontal_3 = 0x5A
+        ui.isCalibrationNeeded = 0x00
+
 
 
 def getbtnClicks(state):
