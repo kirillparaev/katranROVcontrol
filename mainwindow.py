@@ -3,15 +3,15 @@ import time
 
 from PyQt6 import QtCore, QtWidgets, QtGui
 from PyQt6.QtCore import Qt
-
 import xinput
 from threading import Thread
 
 
 class Ui_MainWindow(object):
     def __init__(self):
-        self.UDPClientSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-        self.serverAddressPort = ("192.168.1.177", 8888)
+        self.UDPClientSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        #self.UDPClientSocket.bind(('192.169.3.16', 57321))
+        self.serverAddressPort = ("192.168.0.177", 8080)
         self.bufferSize = 1024
         self.th_vertical_0 = 0x5A  # 90
         self.th_vertical_1 = 0x5A
@@ -227,7 +227,7 @@ def inputHandling():
         ui.msgFrom.append(ui.th_horizontal_2)
         ui.msgFrom.append(ui.th_horizontal_3)
         ui.msgFrom.append(ui.isCalibrationNeeded)
-        time.sleep(0.05)  # задержка 4 мс
+        time.sleep(1)  # задержка в секундах
         ui.UDPClientSocket.sendto(ui.msgFrom, ui.serverAddressPort)
         ui.msgFrom = bytearray()
         ui.th_vertical_0 = 0x5A
