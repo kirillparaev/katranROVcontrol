@@ -313,6 +313,19 @@
      <string>Калибровка гироскопа</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="checkBox_debugMode">
+    <property name="geometry">
+     <rect>
+      <x>414</x>
+      <y>380</y>
+      <width>91</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Debug Mode</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
