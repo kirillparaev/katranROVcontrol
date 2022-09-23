@@ -202,8 +202,8 @@ if __name__ == "__main__":
     import sys
 
     pad = xinput.XInputJoystick(0)
-    #rov_UDP = UDP.UDPConnection("192.168.0.177", 8080)
-    rov_UDP = UDP.UDPConnection("127.0.0.1", 127)
+    # rov_UDP = UDP.UDPConnection("192.168.0.177", 8080)
+    rov_UDP = UDP.UDPConnection("127.0.0.1", 127) # for debugging purposes
 
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()

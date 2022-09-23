@@ -14,6 +14,8 @@ class UDPConnection:
         self.th_horizontal_3 = 0x5A
         self.isCalibrationNeeded = 0x00
         self.msgFrom = bytearray()
+        self.hasSentFirstPacket = False
+        self.prevPacket = self.msgFrom
 
     def sendPacket(self):
         self.msgFrom.append(self.th_vertical_0)
@@ -23,7 +25,15 @@ class UDPConnection:
         self.msgFrom.append(self.th_horizontal_2)
         self.msgFrom.append(self.th_horizontal_3)
         self.msgFrom.append(self.isCalibrationNeeded)
-        self.UDPClientSocket.sendto(self.msgFrom, self.serverAddressPort)
+        if not self.hasSentFirstPacket:
+            self.UDPClientSocket.sendto(self.msgFrom, self.serverAddressPort)
+            self.hasSentFirstPacket = True
+        if self.msgFrom == self.prevPacket:
+            return
+        else:
+            for i in range(5):
+                self.UDPClientSocket.sendto(self.msgFrom, self.serverAddressPort)
+        self.prevPacket = self.msgFrom
 
     def clearPacket(self):
         self.msgFrom = bytearray()
