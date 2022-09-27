@@ -33,7 +33,7 @@ class UDPConnection:
         if self.msgFrom == self.prevPacket:
             return
         else:
-            for i in range(1): # прикрутить настройку потока посылаемых пакетов
+            for i in range(5): # прикрутить настройку потока посылаемых пакетов
                 self.UDPClientSocket.sendto(self.msgFrom, self.serverAddressPort)
         self.prevPacket = self.msgFrom
 
