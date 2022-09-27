@@ -1,5 +1,4 @@
 import time
-
 from PyQt6 import QtCore, QtWidgets, QtGui
 import xinput
 import UDP
@@ -21,29 +20,31 @@ class Ui_MainWindow(object):
         self.labelButtonsPressed.setFont(font)
         self.labelButtonsPressed.setTextFormat(QtCore.Qt.TextFormat.AutoText)
         self.labelButtonsPressed.setScaledContents(False)
-        self.labelButtonsPressed.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop)
+        self.labelButtonsPressed.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeading|QtCore.Qt.AlignmentFlag.AlignLeft|QtCore.Qt.AlignmentFlag.AlignTop)
         self.labelButtonsPressed.setWordWrap(True)
         self.labelButtonsPressed.setObjectName("labelButtonsPressed")
         self.labelSendingPacket = QtWidgets.QLabel(self.centralwidget)
-        self.labelSendingPacket.setGeometry(QtCore.QRect(30, 170, 581, 101))
+        self.labelSendingPacket.setGeometry(QtCore.QRect(20, 170, 581, 101))
         font = QtGui.QFont()
         font.setPointSize(17)
         font.setBold(True)
         self.labelSendingPacket.setFont(font)
-        self.labelSendingPacket.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop)
+        self.labelSendingPacket.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeading|QtCore.Qt.AlignmentFlag.AlignLeft|QtCore.Qt.AlignmentFlag.AlignTop)
         self.labelSendingPacket.setObjectName("labelSendingPacket")
         self.checkBox_Y_btn = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox_Y_btn.setEnabled(False)
         self.checkBox_Y_btn.setGeometry(QtCore.QRect(270, 40, 81, 20))
         self.checkBox_Y_btn.setObjectName("checkBox_Y_btn")
         self.checkBox_A_btn = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox_A_btn.setEnabled(False)
         self.checkBox_A_btn.setGeometry(QtCore.QRect(370, 40, 75, 20))
         self.checkBox_A_btn.setObjectName("checkBox_A_btn")
         self.checkBox_LB_btn = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox_LB_btn.setEnabled(False)
         self.checkBox_LB_btn.setGeometry(QtCore.QRect(460, 40, 75, 20))
         self.checkBox_LB_btn.setObjectName("checkBox_LB_btn")
         self.checkBox_RB_btn = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox_RB_btn.setEnabled(False)
         self.checkBox_RB_btn.setGeometry(QtCore.QRect(560, 40, 75, 20))
         self.checkBox_RB_btn.setObjectName("checkBox_RB_btn")
         self.packet_1st_byte = QtWidgets.QLabel(self.centralwidget)
@@ -65,10 +66,12 @@ class Ui_MainWindow(object):
         self.packet_6th_byte.setGeometry(QtCore.QRect(410, 180, 21, 16))
         self.packet_6th_byte.setObjectName("packet_6th_byte")
         self.verticalSlider_LT = QtWidgets.QSlider(self.centralwidget)
+        self.verticalSlider_LT.setEnabled(False)
         self.verticalSlider_LT.setGeometry(QtCore.QRect(500, 100, 18, 160))
         self.verticalSlider_LT.setOrientation(QtCore.Qt.Orientation.Vertical)
         self.verticalSlider_LT.setObjectName("verticalSlider_LT")
         self.verticalSlider_RT = QtWidgets.QSlider(self.centralwidget)
+        self.verticalSlider_RT.setEnabled(False)
         self.verticalSlider_RT.setGeometry(QtCore.QRect(620, 100, 18, 160))
         self.verticalSlider_RT.setMaximum(255)
         self.verticalSlider_RT.setProperty("value", 0)
@@ -83,7 +86,7 @@ class Ui_MainWindow(object):
         self.label_RT_R2.setObjectName("label_RT_R2")
         self.label_padNotDetected = QtWidgets.QLabel(self.centralwidget)
         self.label_padNotDetected.setEnabled(True)
-        self.label_padNotDetected.setGeometry(QtCore.QRect(30, 340, 331, 71))
+        self.label_padNotDetected.setGeometry(QtCore.QRect(10, 380, 331, 31))
         font = QtGui.QFont()
         font.setPointSize(15)
         font.setBold(True)
@@ -94,8 +97,19 @@ class Ui_MainWindow(object):
         self.labelCalibrating.setGeometry(QtCore.QRect(430, 180, 49, 16))
         self.labelCalibrating.setObjectName("labelCalibrating")
         self.checkBoxCalibrationMode = QtWidgets.QCheckBox(self.centralwidget)
-        self.checkBoxCalibrationMode.setGeometry(QtCore.QRect(550, 380, 161, 20))
+        self.checkBoxCalibrationMode.setGeometry(QtCore.QRect(560, 390, 161, 20))
         self.checkBoxCalibrationMode.setObjectName("checkBoxCalibrationMode")
+        self.checkBox_X_btn = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox_X_btn.setEnabled(False)
+        self.checkBox_X_btn.setGeometry(QtCore.QRect(270, 80, 75, 20))
+        self.checkBox_X_btn.setObjectName("checkBox_X_btn")
+        self.checkBox_B_btn = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox_B_btn.setEnabled(False)
+        self.checkBox_B_btn.setGeometry(QtCore.QRect(370, 80, 75, 20))
+        self.checkBox_B_btn.setObjectName("checkBox_B_btn")
+        self.label_ServoPacket = QtWidgets.QLabel(self.centralwidget)
+        self.label_ServoPacket.setGeometry(QtCore.QRect(450, 180, 21, 16))
+        self.label_ServoPacket.setObjectName("label_ServoPacket")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 726, 22))
@@ -104,12 +118,7 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
-        self.checkBox_Y_btn.setEnabled(False)
-        self.checkBox_A_btn.setEnabled(False)
-        self.checkBox_LB_btn.setEnabled(False)
-        self.checkBox_RB_btn.setEnabled(False)
-        self.verticalSlider_RT.setEnabled(False)
-        self.verticalSlider_LT.setEnabled(False)
+
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -133,8 +142,11 @@ class Ui_MainWindow(object):
         self.label_padNotDetected.setText(_translate("MainWindow", "!!! Геймпад не обнаружен !!!"))
         self.labelCalibrating.setText(_translate("MainWindow", "00"))
         self.checkBoxCalibrationMode.setText(_translate("MainWindow", "Калибровка гироскопа"))
+        self.checkBox_X_btn.setText(_translate("MainWindow", "X / Square"))
+        self.checkBox_B_btn.setText(_translate("MainWindow", "B / Circle"))
+        self.label_ServoPacket.setText(_translate("MainWindow", "00"))
 
-    def updateUI(self, state, ):
+    def updateUI(self, state):
         if state:
             self.label_padNotDetected.setText("")
 
@@ -147,6 +159,18 @@ class Ui_MainWindow(object):
             else:
                 self.checkBox_Y_btn.setCheckState(QtCore.Qt.CheckState.Unchecked)
                 self.checkBox_A_btn.setCheckState(QtCore.Qt.CheckState.Unchecked)
+
+            if state.gamepad.buttons & 0b100000000000000:  # квадрат\Х - открыть манипулятор
+                self.checkBox_B_btn.setCheckState(QtCore.Qt.CheckState.Unchecked)
+                time.sleep(0.005)
+                self.checkBox_X_btn.setCheckState(QtCore.Qt.CheckState.Checked)
+            elif state.gamepad.buttons & 0b10000000000000:  # круг\В - закрыть манипулятор
+                self.checkBox_X_btn.setCheckState(QtCore.Qt.CheckState.Unchecked)
+                time.sleep(0.005)
+                self.checkBox_B_btn.setCheckState(QtCore.Qt.CheckState.Checked)
+            else:
+                self.checkBox_X_btn.setCheckState(QtCore.Qt.CheckState.Unchecked)
+                self.checkBox_B_btn.setCheckState(QtCore.Qt.CheckState.Unchecked)
 
             if state.gamepad.buttons & 0b0000001000000000:  # R1\RB - поворот вокруг своей оси по часовой стрелке
                 self.checkBox_RB_btn.setCheckState(QtCore.Qt.CheckState.Checked)
@@ -175,6 +199,8 @@ class Ui_MainWindow(object):
         self.packet_6th_byte.setText(str(rov_UDP.th_horizontal_3))
         time.sleep(0.001)
         self.labelCalibrating.setText(str(rov_UDP.isCalibrationNeeded))
+        time.sleep(0.001)
+        self.label_ServoPacket.setText(str(rov_UDP.servoManipulator))
 
 
 def inputHandling():
@@ -202,8 +228,9 @@ if __name__ == "__main__":
     import sys
 
     pad = xinput.XInputJoystick(0)
-    # rov_UDP = UDP.UDPConnection("192.168.0.177", 8080)
-    rov_UDP = UDP.UDPConnection("127.0.0.1", 127) # for debugging purposes
+    # прикрутить ввод ip адреса и порта
+    rov_UDP = UDP.UDPConnection("192.168.0.177", 8080)
+    # rov_UDP = UDP.UDPConnection("127.0.0.1", 127) # for debugging purposes
 
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
