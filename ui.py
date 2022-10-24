@@ -98,10 +98,10 @@ class Ui_MainWindow(object):
         self.btn_minimize.setMinimumSize(QtCore.QSize(16, 16))
         self.btn_minimize.setMaximumSize(QtCore.QSize(17, 17))
         self.btn_minimize.setStyleSheet("QPushButton {\n"
-                                        "    image: url(:/icons/icons/icon_minimize.png);\n"
+                                        "    background-position: center;\n"
+                                        "    background-image: url(:/icons/icons/icon_minimize.png);\n"
                                         "    border: none;\n"
-                                        "    border-radius: 8px;        \n"
-                                        "    \n"
+                                        "    border-radius: 8px;\n"
                                         "    background-color: rgb(43, 43, 43);\n"
                                         "}\n"
                                         "QPushButton:hover {    \n"
@@ -118,7 +118,8 @@ class Ui_MainWindow(object):
         font.setFamily("Wingdings")
         self.btn_maximize.setFont(font)
         self.btn_maximize.setStyleSheet("QPushButton {\n"
-                                        "    image: url(:/icons/icons/icon_maximize.png);\n"
+                                        "    background-position: center;\n"
+                                        "    background-image: url(:/icons/icons/icon_maximize.png);\n"
                                         "    border: none;\n"
                                         "    border-radius: 8px;    \n"
                                         "    background-color: rgb(43, 43, 43);\n"
@@ -135,15 +136,13 @@ class Ui_MainWindow(object):
         self.btn_close.setStyleSheet("QPushButton {\n"
                                      "    border: none;\n"
                                      "    border-radius: 8px;        \n"
-                                     "    \n"
                                      "    background-color: rgb(221, 114, 21);\n"
-                                     "    \n"
-                                     "    image: url(:/icons/icons/icon_close.png);\n"
+                                     "    background-repeat: no-repeat;\n"
+                                     "    background-position: center;\n"
+                                     "    background-image: url(:/icons/icons/icon_close.png);\n"
                                      "}\n"
                                      "QPushButton:hover {        \n"
-                                     "    \n"
                                      "    background-color: rgb(159, 80, 15);\n"
-                                     "    \n"
                                      "}")
         self.btn_close.setText("")
         self.btn_close.setObjectName("btn_close")
@@ -168,6 +167,8 @@ class Ui_MainWindow(object):
             "    background: 3px solid rgb(221, 114, 21);\n"
             "    border: 3px solid rgb(159, 80, 15);    \n"
             "    background-image: url(:/icons/icons/cil-check-alt.png);\n"
+            "    background-position: center;\n"
+            "    background-repeat: no-repeat;\n"
             "}\n"
             "QCheckBox {\n"
             "    background-color: none;\n"

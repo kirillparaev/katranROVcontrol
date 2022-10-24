@@ -6,15 +6,14 @@ class UDPConnection:
         self.UDPClientSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.serverAddressPort = (remoteIP, remotePort)
         self.bufferSize = 1024
-        self.th_vertical_0 = 0x5A  # 1 byte
-        self.th_vertical_1 = 0x5A  # 2 byte
-        self.th_horizontal_0 = 0x5A  # 3
-        self.th_horizontal_1 = 0x5A   # 4
-        self.th_horizontal_2 = 0x5A  # 5
-        self.th_horizontal_3 = 0x5A  # 6
+        self.th_vertical_0 = 0x5B  # 1 byte
+        self.th_vertical_1 = 0x5B  # 2 byte
+        self.th_horizontal_0 = 0x5B  # 3
+        self.th_horizontal_1 = 0x5B   # 4
+        self.th_horizontal_2 = 0x5B  # 5
+        self.th_horizontal_3 = 0x5B  # 6
         self.isCalibrationNeeded = 0x00  # 7
         self.servoManipulator = 0x5A  # 8
-
         self.msgFrom = bytearray()
         self.hasSentFirstPacket = False
         self.prevPacket = self.msgFrom
@@ -39,24 +38,25 @@ class UDPConnection:
 
     def clearPacket(self):
         self.msgFrom = bytearray()
-        self.th_vertical_0 = 0x5A
-        self.th_vertical_1 = 0x5A
-        self.th_horizontal_0 = 0x5A
-        self.th_horizontal_1 = 0x5A
-        self.th_horizontal_2 = 0x5A
-        self.th_horizontal_3 = 0x5A
+        self.th_vertical_0 = 0x5B
+        self.th_vertical_1 = 0x5B
+        self.th_horizontal_0 = 0x5B
+        self.th_horizontal_1 = 0x5B
+        self.th_horizontal_2 = 0x5B
+        self.th_horizontal_3 = 0x5B
         self.isCalibrationNeeded = 0x00
 
     def formPacket(self, state):
         if state.gamepad.buttons & 0b1000000000000000:  # треугольник\Y - поднять робота вверх (приоритет)
-            self.th_vertical_0 = 0xB4
-            self.th_vertical_1 = 0xB4
+            self.th_vertical_0 = 0x7F
+            self.th_vertical_1 = 0x7F
         elif state.gamepad.buttons & 0b0001000000000000:  # крестик\A - погрузить робота
-            self.th_vertical_0 = 0x00
-            self.th_vertical_1 = 0x00
+            self.th_vertical_0 = 0x19
+            self.th_vertical_1 = 0x19
         else:
-            self.th_vertical_0 = 0x5A
-            self.th_vertical_1 = 0x5A
+            self.th_vertical_0 = 0x5B
+            self.th_vertical_1 = 0x5B
+
 
         if state.gamepad.buttons & 0b100000000000000:  # квадрат\Х - открыть манипулятор
             if self.servoManipulator != 180:
@@ -67,24 +67,25 @@ class UDPConnection:
         else:
             self.servoManipulator = self.servoManipulator
 
+
         if state.gamepad.buttons & 0b0000001000000000:  # R1\RB - поворот вокруг своей оси направо
-            self.th_horizontal_0 = 0xB4  # вращение боковых движителей в этом и следующем if
-            self.th_horizontal_1 = 0xB4
+            self.th_horizontal_0 = 0x7F  # вращение боковых движителей в этом и следующем if
+            self.th_horizontal_1 = 0x7F
         else:
-            self.th_horizontal_0 = 0x5A
-            self.th_horizontal_1 = 0x5A
+            self.th_horizontal_0 = 0x5B
+            self.th_horizontal_1 = 0x5B
 
         if state.gamepad.buttons & 0b0000000100000000:  # L1\LB - поворот вокруг своей оси налево
-            self.th_horizontal_2 = 0xB4
-            self.th_horizontal_3 = 0xB4
+            self.th_horizontal_2 = 0x7F
+            self.th_horizontal_3 = 0x7F
         else:
-            self.th_horizontal_2 = 0x5A
-            self.th_horizontal_3 = 0x5A
+            self.th_horizontal_2 = 0x5B
+            self.th_horizontal_3 = 0x5B
 
         # курки не будут работать вместе с плечиками
         if state.gamepad.right_trigger and (state.gamepad.buttons & 0b0000000100000000 == 0) and (
                 state.gamepad.buttons & 0b0000001000000000 == 0):
-            right_trigger = int((state.gamepad.right_trigger / 255) * 90)
+            right_trigger = int((state.gamepad.right_trigger / 255) * 50)
             self.th_horizontal_0 = (self.th_horizontal_0 + right_trigger)
             self.th_horizontal_1 = (self.th_horizontal_1 + right_trigger)
             self.th_horizontal_2 = (self.th_horizontal_2 + right_trigger)
@@ -92,7 +93,7 @@ class UDPConnection:
 
         if state.gamepad.left_trigger and (state.gamepad.buttons & 0b0000000100000000 == 0) and (
                 state.gamepad.buttons & 0b0000001000000000 == 0):
-            left_trigger = int((state.gamepad.left_trigger / 255) * 90)
+            left_trigger = int((state.gamepad.left_trigger / 255) * 50)
             self.th_horizontal_0 = (self.th_horizontal_0 - left_trigger)
             self.th_horizontal_1 = (self.th_horizontal_1 - left_trigger)
             self.th_horizontal_2 = (self.th_horizontal_2 - left_trigger)
