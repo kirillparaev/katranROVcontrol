@@ -6,16 +6,19 @@ class UDPConnection:
         self.UDPClientSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.serverAddressPort = (remoteIP, remotePort)
         self.bufferSize = 1024
-        self.th_vertical_0 = 0x5B  # 1 byte
-        self.th_vertical_1 = 0x5B  # 2 byte
+        self.hasSentFirstPacket = False
+        self.isInDebugMode = False
+
+        self.th_vertical_0 = 0x5B  # 1st byte
+        self.th_vertical_1 = 0x5B  # 2nd byte
         self.th_horizontal_0 = 0x5B  # 3
-        self.th_horizontal_1 = 0x5B   # 4
+        self.th_horizontal_1 = 0x5B  # 4
         self.th_horizontal_2 = 0x5B  # 5
         self.th_horizontal_3 = 0x5B  # 6
         self.isCalibrationNeeded = 0x00  # 7
         self.servoManipulator = 0x5A  # 8
+
         self.msgFrom = bytearray()
-        self.hasSentFirstPacket = False
         self.prevPacket = self.msgFrom
 
     def sendPacket(self):
@@ -25,14 +28,15 @@ class UDPConnection:
         self.msgFrom.append(self.th_horizontal_1)
         self.msgFrom.append(self.th_horizontal_2)
         self.msgFrom.append(self.th_horizontal_3)
+
         self.msgFrom.append(self.isCalibrationNeeded)
         if not self.hasSentFirstPacket:
             self.UDPClientSocket.sendto(self.msgFrom, self.serverAddressPort)
             self.hasSentFirstPacket = True
-        if self.msgFrom == self.prevPacket:
+        elif self.msgFrom == self.prevPacket:
             return
         else:
-            for i in range(5): # прикрутить настройку потока посылаемых пакетов
+            for i in range(5):  # прикрутить настройку потока посылаемых пакетов
                 self.UDPClientSocket.sendto(self.msgFrom, self.serverAddressPort)
         self.prevPacket = self.msgFrom
 
@@ -57,7 +61,6 @@ class UDPConnection:
             self.th_vertical_0 = 0x5B
             self.th_vertical_1 = 0x5B
 
-
         if state.gamepad.buttons & 0b100000000000000:  # квадрат\Х - открыть манипулятор
             if self.servoManipulator != 180:
                 self.servoManipulator = self.servoManipulator + 5
@@ -66,7 +69,6 @@ class UDPConnection:
                 self.servoManipulator = self.servoManipulator - 5
         else:
             self.servoManipulator = self.servoManipulator
-
 
         if state.gamepad.buttons & 0b0000001000000000:  # R1\RB - поворот вокруг своей оси направо
             self.th_horizontal_0 = 0x7F  # вращение боковых движителей в этом и следующем if
