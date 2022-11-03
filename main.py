@@ -4,7 +4,8 @@ from threading import Thread
 from ui import *
 import time
 from PyQt6 import QtCore, QtWidgets
-
+from PySide6.QtGui import QIcon, QKeySequence, QPixmap
+import resources_rc
 
 class ExtendedUI(Ui_MainWindow):
     # Класс-наследник окна, создаваемого qt designer.
@@ -17,6 +18,7 @@ class ExtendedUI(Ui_MainWindow):
         # окно без рамки
         MainWindow.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
         MainWindow.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
+
 
     def updateUI(self, state):
         if state:
