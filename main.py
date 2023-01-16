@@ -1,24 +1,67 @@
+from PyQt6.QtCore import *
+from PyQt6.QtGui import *
+from PyQt6.QtWidgets import *
 import xinput
 import UDP
-from threading import Thread
 from ui import *
+from threading import Thread
 import time
-from PyQt6 import QtCore, QtWidgets
-from PySide6.QtGui import QIcon, QKeySequence, QPixmap
 import resources_rc
+import cv2
 
-class ExtendedUI(Ui_MainWindow):
+
+class Worker1(QThread):
+    ImageUpdate = pyqtSignal(QImage)
+
+    def run(self):
+        self.ThreadActive = True
+        Capture = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+        while self.ThreadActive:
+            ret, frame = Capture.read()
+            if ret:
+                Image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                FlippedImage = cv2.flip(Image, 1)
+                ConvertToQtFormat = QImage(FlippedImage.data, FlippedImage.shape[1], FlippedImage.shape[0],
+                                           QImage.Format.Format_RGB888)
+                Pic = ConvertToQtFormat.scaled(640, 480, Qt.AspectRatioMode.KeepAspectRatio)
+                self.ImageUpdate.emit(Pic)
+
+    def stop(self):
+        self.ThreadActive = False
+        self.quit()
+
+
+class ExtendedUI(QtWidgets.QMainWindow, Ui_MainWindow):
     # Класс-наследник окна, создаваемого qt designer.
     # Использовать для любых изменений класса-родителя.
     def __init__(self):
         super().__init__()
+        self.setupUi(self)
+        self.dragPos = QtCore.QPoint()
+
+    def mousePressEvent(self, event):  # +
+        self.dragPos = event.globalPos()
+
+    def mouseMoveEvent(self, event):  # !!!
+        if event.buttons() == Qt.MouseButtons.LeftButton:
+            self.move(self.pos() + event.globalPos() - self.dragPos)
+            self.dragPos = event.globalPos()
+            event.accept()
+
+    def ImageUpdateSlot(self, Image):
+        self.FeedLabel.setPixmap(QPixmap.fromImage(Image))
+
+    def CancelFeed(self):
+        self.Worker1.stop()
 
     def setupUi(self, MainWindow):
         super().setupUi(MainWindow)
         # окно без рамки
         MainWindow.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
         MainWindow.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
-
+        self.Worker1 = Worker1()
+        self.Worker1.start()
+        self.Worker1.ImageUpdate.connect(self.ImageUpdateSlot)
 
     def updateUI(self, state):
         if state:
@@ -72,9 +115,9 @@ class ExtendedUI(Ui_MainWindow):
         time.sleep(0.001)
         self.packet_6th_byte.setText(str(rov_UDP.th_horizontal_3))
         time.sleep(0.001)
-        self.labelCalibrating.setText(str(rov_UDP.isCalibrationNeeded))
+        self.labelCalibrating.setText(str(rov_UDP.servoManipulator_0))
         time.sleep(0.001)
-        self.label_ServoPacket.setText(str(rov_UDP.servoManipulator))
+        self.label_ServoPacket.setText(str(rov_UDP.servoManipulator_1))
 
 
 def inputHandling():

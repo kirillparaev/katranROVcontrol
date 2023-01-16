@@ -16,7 +16,8 @@ class UDPConnection:
         self.th_horizontal_2 = 0x5B  # 5
         self.th_horizontal_3 = 0x5B  # 6
         self.isCalibrationNeeded = 0x00  # 7
-        self.servoManipulator = 0x5A  # 8
+        self.servoManipulator_0 = 127  # 8
+        self.servoManipulator_1 = 127  # 9
 
         self.msgFrom = bytearray()
         self.prevPacket = self.msgFrom
@@ -28,6 +29,8 @@ class UDPConnection:
         self.msgFrom.append(self.th_horizontal_1)
         self.msgFrom.append(self.th_horizontal_2)
         self.msgFrom.append(self.th_horizontal_3)
+        self.msgFrom.append(self.servoManipulator_0)
+        self.msgFrom.append(self.servoManipulator_1)
 
         self.msgFrom.append(self.isCalibrationNeeded)
         if not self.hasSentFirstPacket:
@@ -62,13 +65,38 @@ class UDPConnection:
             self.th_vertical_1 = 0x5B
 
         if state.gamepad.buttons & 0b100000000000000:  # квадрат\Х - открыть манипулятор
-            if self.servoManipulator != 180:
-                self.servoManipulator = self.servoManipulator + 5
+            if self.servoManipulator_0 != 255 and self.servoManipulator_1 != 255:
+                if self.servoManipulator_0 + 1 > 255 and self.servoManipulator_1 + 1 > 255:
+                    self.servoManipulator_0 = 255
+                    self.servoManipulator_1 = 255
+                else:
+                    self.servoManipulator_0 = self.servoManipulator_0 + 1
+                    self.servoManipulator_1 = self.servoManipulator_1 + 1
         elif state.gamepad.buttons & 0b10000000000000:  # круг\В - закрыть манипулятор
-            if self.servoManipulator != 0:
-                self.servoManipulator = self.servoManipulator - 5
+            if self.servoManipulator_0 != 0 and self.servoManipulator_1 != 0:
+                if self.servoManipulator_0 - 1 < 0 and self.servoManipulator_1 - 1 < 0:
+                    self.servoManipulator_0 = 0
+                    self.servoManipulator_1 = 0
+                else:
+                    self.servoManipulator_0 = self.servoManipulator_0 - 1
+                    self.servoManipulator_1 = self.servoManipulator_1 - 1
         else:
-            self.servoManipulator = self.servoManipulator
+            self.servoManipulator_0 = self.servoManipulator_0
+            self.servoManipulator_1 = self.servoManipulator_1
+        '''
+        if state.gamepad.buttons & 0b100000000000000:  # квадрат\Х - открыть манипулятор
+            if (self.servoManipulator_0 + 5) > 255:
+                self.servoManipulator_0 = 255
+            else:
+                self.servoManipulator_0 = self.servoManipulator_0 + 5
+        elif state.gamepad.buttons & 0b10000000000000:  # круг\В - закрыть манипулятор
+            if (self.servoManipulator_0 - 5) < 0:
+                self.servoManipulator_0 = 0
+            else:
+                self.servoManipulator_0 = self.servoManipulator_0 - 5
+        else:
+            self.servoManipulator_0 = self.servoManipulator_0
+        '''
 
         if state.gamepad.buttons & 0b0000001000000000:  # R1\RB - поворот вокруг своей оси направо
             self.th_horizontal_0 = 0x7F  # вращение боковых движителей в этом и следующем if

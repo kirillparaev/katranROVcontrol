@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>880</width>
-    <height>600</height>
+    <width>760</width>
+    <height>568</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>880</width>
-    <height>600</height>
+    <width>640</width>
+    <height>480</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -165,7 +165,7 @@ border-radius: 10px;</string>
               <widget class="QFrame" name="frameAppTabs">
                <property name="maximumSize">
                 <size>
-                 <width>150</width>
+                 <width>200</width>
                  <height>16777215</height>
                 </size>
                </property>
@@ -177,7 +177,7 @@ border-radius: 10px;</string>
                </property>
                <layout class="QHBoxLayout" name="horizontalLayout_4">
                 <item>
-                 <widget class="QPushButton" name="btnControlsTab">
+                 <widget class="QPushButton" name="btnCameraTab">
                   <property name="minimumSize">
                    <size>
                     <width>56</width>
@@ -192,7 +192,7 @@ color: rgb(255, 255, 255);
 </string>
                   </property>
                   <property name="text">
-                   <string>Controls</string>
+                   <string>Camera</string>
                   </property>
                  </widget>
                 </item>
@@ -466,12 +466,32 @@ background-color: none;</string>
            <number>0</number>
           </property>
           <item>
-           <widget class="QStackedWidget" name="stackedWidget">
+           <widget class="QStackedWidget" name="dashboard">
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
-            <widget class="QWidget" name="page_Controls">
-             <layout class="QVBoxLayout" name="verticalLayout_3"/>
+            <widget class="QWidget" name="page_Camera">
+             <layout class="QHBoxLayout" name="horizontalLayout_12">
+              <item>
+               <widget class="QFrame" name="frame_10">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_9">
+                 <item>
+                  <widget class="QLabel" name="FeedLabel">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
             </widget>
             <widget class="QWidget" name="page_Debug">
              <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -797,6 +817,12 @@ background-color: none;</string>
               </item>
               <item>
                <widget class="QFrame" name="frame_2">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="maximumSize">
                  <size>
                   <width>16777215</width>
@@ -991,16 +1017,6 @@ background-color: none;</string>
                  <enum>QFrame::Raised</enum>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_7">
-                 <item>
-                  <widget class="QFrame" name="frame_10">
-                   <property name="frameShape">
-                    <enum>QFrame::StyledPanel</enum>
-                   </property>
-                   <property name="frameShadow">
-                    <enum>QFrame::Raised</enum>
-                   </property>
-                  </widget>
-                 </item>
                  <item>
                   <widget class="QFrame" name="frame_11">
                    <property name="frameShape">
