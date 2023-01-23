@@ -31,22 +31,16 @@ class Worker1(QThread):
         self.quit()
 
 
-class ExtendedUI(QtWidgets.QMainWindow, Ui_MainWindow):
+class ExtendedUI(QtWidgets.QWidget, Ui_MainWindow):
     # Класс-наследник окна, создаваемого qt designer.
     # Использовать для любых изменений класса-родителя.
-    def __init__(self):
-        super().__init__()
-        self.setupUi(self)
-        self.dragPos = QtCore.QPoint()
 
-    def mousePressEvent(self, event):  # +
-        self.dragPos = event.globalPos()
+    # переключалки вкладок
+    def SwitchTabCamera(self):
+        self.dashboard.setCurrentIndex(0)
 
-    def mouseMoveEvent(self, event):  # !!!
-        if event.buttons() == Qt.MouseButtons.LeftButton:
-            self.move(self.pos() + event.globalPos() - self.dragPos)
-            self.dragPos = event.globalPos()
-            event.accept()
+    def SwitchTabDebug(self):
+        self.dashboard.setCurrentIndex(1)
 
     def ImageUpdateSlot(self, Image):
         self.FeedLabel.setPixmap(QPixmap.fromImage(Image))
@@ -56,6 +50,9 @@ class ExtendedUI(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def setupUi(self, MainWindow):
         super().setupUi(MainWindow)
+        self.old_pos = None
+        self.btnCameraTab.clicked.connect(self.SwitchTabCamera)
+        self.btnDebugTab.clicked.connect(self.SwitchTabDebug)
         # окно без рамки
         MainWindow.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
         MainWindow.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)

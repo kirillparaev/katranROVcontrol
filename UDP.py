@@ -39,7 +39,7 @@ class UDPConnection:
         elif self.msgFrom == self.prevPacket:
             return
         else:
-            for i in range(5):  # прикрутить настройку потока посылаемых пакетов
+            for i in range(1):  # прикрутить настройку потока посылаемых пакетов
                 self.UDPClientSocket.sendto(self.msgFrom, self.serverAddressPort)
         self.prevPacket = self.msgFrom
 
@@ -115,7 +115,7 @@ class UDPConnection:
         # курки не будут работать вместе с плечиками
         if state.gamepad.right_trigger and (state.gamepad.buttons & 0b0000000100000000 == 0) and (
                 state.gamepad.buttons & 0b0000001000000000 == 0):
-            right_trigger = int((state.gamepad.right_trigger / 255) * 50)
+            right_trigger = int((state.gamepad.right_trigger / 255) * 24) # default - 50; for 1 eng = 25
             self.th_horizontal_0 = (self.th_horizontal_0 + right_trigger)
             self.th_horizontal_1 = (self.th_horizontal_1 + right_trigger)
             self.th_horizontal_2 = (self.th_horizontal_2 + right_trigger)
@@ -123,7 +123,7 @@ class UDPConnection:
 
         if state.gamepad.left_trigger and (state.gamepad.buttons & 0b0000000100000000 == 0) and (
                 state.gamepad.buttons & 0b0000001000000000 == 0):
-            left_trigger = int((state.gamepad.left_trigger / 255) * 50)
+            left_trigger = int((state.gamepad.left_trigger / 255) * 24)
             self.th_horizontal_0 = (self.th_horizontal_0 - left_trigger)
             self.th_horizontal_1 = (self.th_horizontal_1 - left_trigger)
             self.th_horizontal_2 = (self.th_horizontal_2 - left_trigger)
