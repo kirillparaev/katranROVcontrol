@@ -441,12 +441,12 @@ class Ui_MainWindow(object):
         self.packet_6th_byte = QtWidgets.QLabel(self.frame_12)
         self.packet_6th_byte.setObjectName("packet_6th_byte")
         self.horizontalLayout_11.addWidget(self.packet_6th_byte)
-        self.labelCalibrating = QtWidgets.QLabel(self.frame_12)
-        self.labelCalibrating.setObjectName("labelCalibrating")
-        self.horizontalLayout_11.addWidget(self.labelCalibrating)
-        self.label_ServoPacket = QtWidgets.QLabel(self.frame_12)
-        self.label_ServoPacket.setObjectName("label_ServoPacket")
-        self.horizontalLayout_11.addWidget(self.label_ServoPacket)
+        self.label_Servo1Packet = QtWidgets.QLabel(self.frame_12)
+        self.label_Servo1Packet.setObjectName("label_Servo1Packet")
+        self.horizontalLayout_11.addWidget(self.label_Servo1Packet)
+        self.label_Servo2Packet = QtWidgets.QLabel(self.frame_12)
+        self.label_Servo2Packet.setObjectName("label_Servo2Packet")
+        self.horizontalLayout_11.addWidget(self.label_Servo2Packet)
         spacerItem11 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_11.addItem(spacerItem11)
         self.verticalLayout_8.addWidget(self.frame_12)
@@ -476,9 +476,6 @@ class Ui_MainWindow(object):
         self.horizontalLayout_9.addWidget(self.label_padNotDetected)
         spacerItem12 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_9.addItem(spacerItem12)
-        self.checkBoxCalibrationMode = QtWidgets.QCheckBox(self.frame_11)
-        self.checkBoxCalibrationMode.setObjectName("checkBoxCalibrationMode")
-        self.horizontalLayout_9.addWidget(self.checkBoxCalibrationMode)
         self.verticalLayout_7.addWidget(self.frame_11)
         self.verticalLayout_4.addWidget(self.frame_3)
         self.dashboard.addWidget(self.page_Debug)
@@ -488,7 +485,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.dashboard.setCurrentIndex(0)
+        self.dashboard.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -516,10 +513,9 @@ class Ui_MainWindow(object):
         self.packet_4th_byte.setText(_translate("MainWindow", "5A"))
         self.packet_5th_byte.setText(_translate("MainWindow", "5A"))
         self.packet_6th_byte.setText(_translate("MainWindow", "5A"))
-        self.labelCalibrating.setText(_translate("MainWindow", "00"))
-        self.label_ServoPacket.setText(_translate("MainWindow", "00"))
+        self.label_Servo1Packet.setText(_translate("MainWindow", "00"))
+        self.label_Servo2Packet.setText(_translate("MainWindow", "00"))
         self.label_padNotDetected.setText(_translate("MainWindow", "!!! Геймпад не обнаружен !!!"))
-        self.checkBoxCalibrationMode.setText(_translate("MainWindow", "Калибровка гироскопа"))
 
 
 if __name__ == "__main__":

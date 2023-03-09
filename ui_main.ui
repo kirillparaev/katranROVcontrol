@@ -468,7 +468,7 @@ background-color: none;</string>
           <item>
            <widget class="QStackedWidget" name="dashboard">
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="page_Camera">
              <layout class="QHBoxLayout" name="horizontalLayout_12">
@@ -976,14 +976,14 @@ background-color: none;</string>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="labelCalibrating">
+                     <widget class="QLabel" name="label_Servo1Packet">
                       <property name="text">
                        <string>00</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="label_ServoPacket">
+                     <widget class="QLabel" name="label_Servo2Packet">
                       <property name="text">
                        <string>00</string>
                       </property>
@@ -1070,13 +1070,6 @@ background-color: none;</string>
                        </size>
                       </property>
                      </spacer>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="checkBoxCalibrationMode">
-                      <property name="text">
-                       <string>Калибровка гироскопа</string>
-                      </property>
-                     </widget>
                     </item>
                    </layout>
                   </widget>
