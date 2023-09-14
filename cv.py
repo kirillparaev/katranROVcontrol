@@ -10,7 +10,7 @@ if __name__ == '__main__':
 cv2.namedWindow("result")
 
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-# HSV фильтр для зеленых объектов из прошлого урока
+# здесь можно менять цвет
 hsv_min = np.array((53, 55, 147), np.uint8)
 hsv_max = np.array((83, 160, 255), np.uint8)
 

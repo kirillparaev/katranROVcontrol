@@ -7,6 +7,7 @@ import resources_rc  # иконки
 
 
 def inputHandling():
+    rov_UDP.sendPacket()
     while True:
         if XInput.get_connected()[0]:
             state = XInput.get_state(0)
@@ -40,7 +41,7 @@ if __name__ == "__main__":
     window = ExtendedUI.ExtendedUI()
     window.setupUi(mainWindow)
     mainWindow.show()
-
+    # mainWindow.showFullScreen()
     inputStream = Thread(target=inputHandling, args=(), daemon=True)
     inputStream.start()
 
