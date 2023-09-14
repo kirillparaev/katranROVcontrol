@@ -9,7 +9,8 @@ class UDPConnection:
         self.bufferSize = 1024
         self.hasSentFirstPacket = False
         self.isInDebugMode = False
-
+        self.leftStickX_prev = 0
+        self.leftStickY_prev = 0
         self.toWrite = array('B', [91, 91, 91, 91, 91, 91, 1, 1])
         '''
         вертикальные 1-2 - [0-1]
@@ -21,13 +22,13 @@ class UDPConnection:
 
     def sendPacket(self):
         if not self.hasSentFirstPacket:
-            self.UDPClientSocket.sendto(self.msgFrom, self.serverAddressPort)
+            for i in range(5):
+                self.UDPClientSocket.sendto(self.msgFrom, self.serverAddressPort)
             self.hasSentFirstPacket = True
         elif self.msgFrom == self.prevPacket:
             return
         else:
-            for i in range(1):  # прикрутить настройку потока посылаемых пакетов
-                self.UDPClientSocket.sendto(self.msgFrom, self.serverAddressPort)
+            self.UDPClientSocket.sendto(self.msgFrom, self.serverAddressPort)
         self.prevPacket = self.msgFrom
 
     def clearPacket(self):
@@ -36,44 +37,155 @@ class UDPConnection:
 
     def formPacket(self, state):
         if state.Gamepad.wButtons & 0b1000000000000000:  # треугольник\Y - поднять робота вверх (приоритет)
-            self.toWrite[0] = 115
-            self.toWrite[1] = 115
+            self.toWrite[0] = 127
+            self.toWrite[1] = 127
         elif state.Gamepad.wButtons & 0b0001000000000000:  # крестик\A - погрузить робота
-            self.toWrite[0] = 67
-            self.toWrite[1] = 67
+            self.toWrite[0] = 25
+            self.toWrite[1] = 25
         else:
             self.toWrite[0] = 91
             self.toWrite[1] = 91
 
-        if state.Gamepad.wButtons & 2:  # влево - вращать манипулятор влево
+        if state.Gamepad.wButtons & 0b0000001000000000:  # R1\RB - поворот вокруг своей оси направо
+            self.toWrite[2] = 127  # вращение боковых движителей в этом и следующем if
+            self.toWrite[3] = 127
+        else:
+            self.toWrite[2] = 91
+            self.toWrite[3] = 91
+
+        if state.Gamepad.wButtons & 0b0000000100000000:  # L1\LB - поворот вокруг своей оси налево
+            self.toWrite[4] = 127
+            self.toWrite[5] = 127
+        else:
+            self.toWrite[4] = 91
+            self.toWrite[5] = 91
+
+        if state.Gamepad.bRightTrigger:
+            right_trigger = int((state.Gamepad.bRightTrigger / 255) * 36)
+            for i in range(2, 6):
+                self.toWrite[i] = self.toWrite[i] + right_trigger
+            '''
+            self.toWrite[2] = (91 + right_trigger)
+            self.toWrite[3] = (91 + right_trigger)
+            self.toWrite[4] = (91 + right_trigger)
+            self.toWrite[5] = (91 + right_trigger)
+            '''
+
+        if state.Gamepad.bLeftTrigger:
+            left_trigger = int((state.Gamepad.bLeftTrigger / 255) * 66)
+            for i in range(2, 6):
+                self.toWrite[i] = self.toWrite[i] - left_trigger
+            '''
+            self.toWrite[2] = (91 - left_trigger)
+            self.toWrite[3] = (91 - left_trigger)
+            self.toWrite[4] = (91 - left_trigger)
+            self.toWrite[5] = (91 - left_trigger)
+            '''
+
+        if state.Gamepad.wButtons & 2:
+            # вниз - закрыть манипулятор
             self.toWrite[6] = 2
-        elif state.Gamepad.wButtons & 1:  # вправо - вращать манипулятор вправо
+        elif state.Gamepad.wButtons & 1:
+            # вверх - открыть манипулятор
             self.toWrite[6] = 0
         else:
             self.toWrite[6] = 1
 
-        if state.Gamepad.wButtons & 4:  # вверх - открыть манипулятор
+        if state.Gamepad.wButtons & 4:
+            # влево - вращать манипулятор влево
             self.toWrite[7] = 2
-        elif state.Gamepad.wButtons & 8:  # вниз - закрыть манипулятор
+        elif state.Gamepad.wButtons & 8:
+            # вправо - вращать манипулятор вправо
             self.toWrite[7] = 0
         else:
             self.toWrite[7] = 1
 
-        # левый стик
-        if state.Gamepad.sThumbLX and state.Gamepad.sThumbLY:  # init: 67 - 91 - 115
-            leftStickX = int(state.Gamepad.sThumbLX / 32768 * 24)  # -32768 - 0 - 32768      вперед назад
-            leftStickY = int(state.Gamepad.sThumbLY / 32768 * 24)  # влево вправо
-            # пусть у нас движки 0,1 находятся на левом борту, а 2,3 - на правом.
-            # тогда, чтобы повернуть на нужно подавать большую скорость на движки стороны,
-            # протвивополжной направлению поворота.
-            # Например, хотим повернуть налево, двигаем правую сторону аппарата.
-            if abs(state.Gamepad.sThumbLY) > 10000:  # 10000 - мертвая зона
-                for i in range(2, 6):
-                    self.toWrite[i] = (self.toWrite[i] + leftStickY)
+        if state.Gamepad.wButtons & 16384: # квадрат и круг - стабилизация тангажа
+            self.toWrite[0] = 127
+            self.toWrite[1] = 25
+        elif state.Gamepad.wButtons & 8192:
+            self.toWrite[0] = 25
+            self.toWrite[1] = 127
 
-            if abs(state.Gamepad.sThumbLX) > 10000 and leftStickX < 0:
-                self.toWrite[4] = (self.toWrite[4] + leftStickX)
-                self.toWrite[5] = (self.toWrite[5] + leftStickX)
-            elif abs(state.Gamepad.sThumbLX) > 10000 and leftStickX > 0:
-                self.toWrite[2] = (self.toWrite[2] + leftStickX)
-                self.toWrite[3] = (self.toWrite[3] + leftStickX)
+        if state.Gamepad.sThumbLX:
+            if state.Gamepad.sThumbLX > 10000:
+                if self.toWrite[4] > 91 and self.toWrite[5] > 91 and not state.Gamepad.wButtons & 0b0000001000000000:
+                    self.toWrite[4] = self.toWrite[4] - abs(int(state.Gamepad.sThumbLX / 32768 * 32))
+                    self.toWrite[5] = self.toWrite[5] - abs(int(state.Gamepad.sThumbLX / 32768 * 32))
+                elif state.Gamepad.bLeftTrigger:
+                    self.toWrite[2] = self.toWrite[2] + abs(int(state.Gamepad.sThumbLX / 32768 * 32))
+                    self.toWrite[3] = self.toWrite[3] + abs(int(state.Gamepad.sThumbLX / 32768 * 32))
+            elif state.Gamepad.sThumbLX < -10000:
+                if self.toWrite[2] > 91 and self.toWrite[3] > 91 and not state.Gamepad.wButtons & 0b0000000100000000:
+                    self.toWrite[2] = self.toWrite[2] - abs(int(state.Gamepad.sThumbLX / 32768 * 32))
+                    self.toWrite[3] = self.toWrite[3] - abs(int(state.Gamepad.sThumbLX / 32768 * 32))
+                elif state.Gamepad.bLeftTrigger:
+                    self.toWrite[4] = self.toWrite[4] + abs(int(state.Gamepad.sThumbLX / 32768 * 32))
+                    self.toWrite[5] = self.toWrite[5] + abs(int(state.Gamepad.sThumbLX / 32768 * 32))
+
+            # левый стик
+            '''
+        if (state.Gamepad.sThumbLX or state.Gamepad.sThumbLY) and state.Gamepad.bLeftTrigger < 5 and state.Gamepad.bRightTrigger < 5:  # диапазон: 25 - 91 - 127
+            # mult = 35;
+            # 24 - low power; 35 - normal
+            deadzone = 12000
+            # из-за коэфа значения со стиков можно привести к собственному диапазону
+            leftStickX = state.Gamepad.sThumbLX / 32768  # -32768 - 0 - 32768      вперед назад
+            leftStickY = state.Gamepad.sThumbLY / 32768  # влево вправо
+
+            if abs(state.Gamepad.sThumbLY) > deadzone:
+                if state.Gamepad.sThumbLY > 0:
+                    for i in range(2, 6):
+                        self.toWrite[i] = self.toWrite[i] + int(leftStickY * 36)
+                else:
+                    for i in range(2, 6):
+                        self.toWrite[i] = self.toWrite[i] + int(leftStickY * 66)
+
+            if abs(state.Gamepad.sThumbLX) > deadzone:
+                if state.Gamepad.sThumbLX > 0:
+                    self.toWrite[2] = (self.toWrite[2] + int(leftStickX * 36))
+                    self.toWrite[3] = (self.toWrite[3] + int(leftStickX * 36))
+                else:
+                    self.toWrite[4] = (self.toWrite[4] + int(leftStickX * 46))
+                    self.toWrite[5] = (self.toWrite[5] + int(leftStickX * 46))
+
+            if state.Gamepad.sThumbLX > 0 and state.Gamepad.sThumbLY > 0:
+                for i in range(2, 6):
+                    self.toWrite[i] = self.toWrite[i] - 20
+            elif state.Gamepad.sThumbLX < 0 and state.Gamepad.sThumbLY < 0:
+                self.toWrite[4] = self.toWrite[4] + 20
+                self.toWrite[5] = self.toWrite[5] + 20
+            '''
+            '''
+            if abs(state.Gamepad.sThumbLY) > deadzone and abs(state.Gamepad.sThumbLX) > deadzone:
+                for i in range(2, 6):
+                    if 127 >= (self.toWrite[i] + leftStickY + leftStickX) >= 25:
+                        self.toWrite[i] = (self.toWrite[i] + leftStickY + leftStickX)
+                    elif (self.toWrite[i] + leftStickY + leftStickX) < 25:
+                        self.toWrite[i] = 25
+                    elif (self.toWrite[i] + leftStickY + leftStickX) > 127:
+                        self.toWrite[i] = 127
+                        
+
+            if abs(state.Gamepad.sThumbLY) > deadzone and abs(self.leftStickY_prev - leftStickY) > 1:
+                # self.toWrite[2] = (self.toWrite[2] + leftStickY) if (self.toWrite[2] + leftStickY) < 127 else 127
+                # self.toWrite[3] = (self.toWrite[3] + leftStickY) if (self.toWrite[3] + leftStickY) < 127 else 127
+                # self.toWrite[4] = (self.toWrite[4] + leftStickY) if (self.toWrite[4] + leftStickY) < 127 else 127
+                # self.toWrite[5] = (self.toWrite[5] + leftStickY) if (self.toWrite[5] + leftStickY) < 127 else 127
+                for i in range(2, 6):
+                    if 127 >= (self.toWrite[i] + leftStickY) >= 25:
+                        self.toWrite[i] = (self.toWrite[i] + leftStickY)
+                    elif (self.toWrite[i] + leftStickY) < 25:
+                        self.toWrite[i] = 25
+                    elif (self.toWrite[i] + leftStickY) > 127:
+                        self.toWrite[i] = 127
+
+                    # self.toWrite[i] = (self.toWrite[i] + leftStickY) if (self.toWrite[i] + leftStickY) < 127 else 127
+
+            if abs(state.Gamepad.sThumbLX) > deadzone and leftStickX < 0 and abs(self.leftStickX_prev - leftStickX) > 1:
+                self.toWrite[4] = (self.toWrite[4] - leftStickX) if (self.toWrite[4] - leftStickX) < 127 else 127
+                self.toWrite[5] = (self.toWrite[5] - leftStickX) if (self.toWrite[5] - leftStickX) < 127 else 127
+            elif abs(state.Gamepad.sThumbLX) > deadzone and leftStickX > 0 and abs(self.leftStickX_prev - leftStickX) > 1:
+                self.toWrite[2] = (self.toWrite[2] + leftStickX) if (self.toWrite[2] + leftStickY) < 127 else 127
+                self.toWrite[3] = (self.toWrite[3] + leftStickX) if (self.toWrite[3] + leftStickY) < 127 else 127
+                '''

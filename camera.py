@@ -16,7 +16,8 @@ class Worker1(QThread):  # камера
                 FlippedImage = cv2.flip(Image, 1)
                 ConvertToQtFormat = QImage(FlippedImage.data, FlippedImage.shape[1], FlippedImage.shape[0],
                                            QImage.Format.Format_RGB888)
-                Pic = ConvertToQtFormat.scaled(640, 480, Qt.AspectRatioMode.KeepAspectRatio)
+                # image scales here
+                Pic = ConvertToQtFormat.scaled(1920, 1080, Qt.AspectRatioMode.KeepAspectRatio)
                 self.ImageUpdate.emit(Pic)
 
     def stop(self):
