@@ -19,6 +19,8 @@ class UDPConnection:
         '''
         self.msgFrom = self.toWrite.tobytes()
         self.prevPacket = self.msgFrom
+        self.receivedPacket = None  # добавляем новую переменную
+        self.toRead = array('B', [0, 0, 0, 0, 0, 0])
 
     def sendPacket(self):
         if not self.hasSentFirstPacket:
@@ -31,9 +33,17 @@ class UDPConnection:
             self.UDPClientSocket.sendto(self.msgFrom, self.serverAddressPort)
         self.prevPacket = self.msgFrom
 
+    def receivePacket(self):
+        data, addr = self.UDPClientSocket.recvfrom(6)
+        receivedPacket = array('B', data)
+        if receivedPacket is None:
+            receivedPacket = array('B', [-1, -1, -1, -1, -1, -1])
+        return receivedPacket
+
     def clearPacket(self):
         self.msgFrom = self.toWrite.tobytes()
         self.toWrite = array('B', [91, 91, 91, 91, 91, 91, self.toWrite[6], self.toWrite[7]])
+        self.toRead = array('B', [0, 0, 0, 0, 0, 0])
 
     def formPacket(self, state):
         if state.Gamepad.wButtons & 0b1000000000000000:  # треугольник\Y - поднять робота вверх (приоритет)
@@ -122,70 +132,3 @@ class UDPConnection:
                 elif state.Gamepad.bLeftTrigger:
                     self.toWrite[4] = self.toWrite[4] + abs(int(state.Gamepad.sThumbLX / 32768 * 32))
                     self.toWrite[5] = self.toWrite[5] + abs(int(state.Gamepad.sThumbLX / 32768 * 32))
-
-            # левый стик
-            '''
-        if (state.Gamepad.sThumbLX or state.Gamepad.sThumbLY) and state.Gamepad.bLeftTrigger < 5 and state.Gamepad.bRightTrigger < 5:  # диапазон: 25 - 91 - 127
-            # mult = 35;
-            # 24 - low power; 35 - normal
-            deadzone = 12000
-            # из-за коэфа значения со стиков можно привести к собственному диапазону
-            leftStickX = state.Gamepad.sThumbLX / 32768  # -32768 - 0 - 32768      вперед назад
-            leftStickY = state.Gamepad.sThumbLY / 32768  # влево вправо
-
-            if abs(state.Gamepad.sThumbLY) > deadzone:
-                if state.Gamepad.sThumbLY > 0:
-                    for i in range(2, 6):
-                        self.toWrite[i] = self.toWrite[i] + int(leftStickY * 36)
-                else:
-                    for i in range(2, 6):
-                        self.toWrite[i] = self.toWrite[i] + int(leftStickY * 66)
-
-            if abs(state.Gamepad.sThumbLX) > deadzone:
-                if state.Gamepad.sThumbLX > 0:
-                    self.toWrite[2] = (self.toWrite[2] + int(leftStickX * 36))
-                    self.toWrite[3] = (self.toWrite[3] + int(leftStickX * 36))
-                else:
-                    self.toWrite[4] = (self.toWrite[4] + int(leftStickX * 46))
-                    self.toWrite[5] = (self.toWrite[5] + int(leftStickX * 46))
-
-            if state.Gamepad.sThumbLX > 0 and state.Gamepad.sThumbLY > 0:
-                for i in range(2, 6):
-                    self.toWrite[i] = self.toWrite[i] - 20
-            elif state.Gamepad.sThumbLX < 0 and state.Gamepad.sThumbLY < 0:
-                self.toWrite[4] = self.toWrite[4] + 20
-                self.toWrite[5] = self.toWrite[5] + 20
-            '''
-            '''
-            if abs(state.Gamepad.sThumbLY) > deadzone and abs(state.Gamepad.sThumbLX) > deadzone:
-                for i in range(2, 6):
-                    if 127 >= (self.toWrite[i] + leftStickY + leftStickX) >= 25:
-                        self.toWrite[i] = (self.toWrite[i] + leftStickY + leftStickX)
-                    elif (self.toWrite[i] + leftStickY + leftStickX) < 25:
-                        self.toWrite[i] = 25
-                    elif (self.toWrite[i] + leftStickY + leftStickX) > 127:
-                        self.toWrite[i] = 127
-                        
-
-            if abs(state.Gamepad.sThumbLY) > deadzone and abs(self.leftStickY_prev - leftStickY) > 1:
-                # self.toWrite[2] = (self.toWrite[2] + leftStickY) if (self.toWrite[2] + leftStickY) < 127 else 127
-                # self.toWrite[3] = (self.toWrite[3] + leftStickY) if (self.toWrite[3] + leftStickY) < 127 else 127
-                # self.toWrite[4] = (self.toWrite[4] + leftStickY) if (self.toWrite[4] + leftStickY) < 127 else 127
-                # self.toWrite[5] = (self.toWrite[5] + leftStickY) if (self.toWrite[5] + leftStickY) < 127 else 127
-                for i in range(2, 6):
-                    if 127 >= (self.toWrite[i] + leftStickY) >= 25:
-                        self.toWrite[i] = (self.toWrite[i] + leftStickY)
-                    elif (self.toWrite[i] + leftStickY) < 25:
-                        self.toWrite[i] = 25
-                    elif (self.toWrite[i] + leftStickY) > 127:
-                        self.toWrite[i] = 127
-
-                    # self.toWrite[i] = (self.toWrite[i] + leftStickY) if (self.toWrite[i] + leftStickY) < 127 else 127
-
-            if abs(state.Gamepad.sThumbLX) > deadzone and leftStickX < 0 and abs(self.leftStickX_prev - leftStickX) > 1:
-                self.toWrite[4] = (self.toWrite[4] - leftStickX) if (self.toWrite[4] - leftStickX) < 127 else 127
-                self.toWrite[5] = (self.toWrite[5] - leftStickX) if (self.toWrite[5] - leftStickX) < 127 else 127
-            elif abs(state.Gamepad.sThumbLX) > deadzone and leftStickX > 0 and abs(self.leftStickX_prev - leftStickX) > 1:
-                self.toWrite[2] = (self.toWrite[2] + leftStickX) if (self.toWrite[2] + leftStickY) < 127 else 127
-                self.toWrite[3] = (self.toWrite[3] + leftStickX) if (self.toWrite[3] + leftStickY) < 127 else 127
-                '''

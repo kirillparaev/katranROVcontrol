@@ -97,3 +97,19 @@ class ExtendedUI(Ui_MainWindow):
         self.label_Servo1Packet.setText(str(rov_UDP.toWrite[6]))
         time.sleep(0.001)
         self.label_Servo2Packet.setText(str(rov_UDP.toWrite[7]))
+        time.sleep(0.001)
+
+        self.packet_x.setText(str(rov_UDP.toRead[0]))
+        time.sleep(0.001)
+        self.packet_y.setText(str(rov_UDP.toRead[1]))
+        time.sleep(0.001)
+        self.packet_z.setText(str(rov_UDP.toRead[2]))
+        time.sleep(0.001)
+        self.packet_depth.setText(str(rov_UDP.toRead[3]))
+        time.sleep(0.001)
+        self.packet_emp1.setText(str(rov_UDP.toRead[4]))
+        time.sleep(0.001)
+        self.packet_emp2.setText(str(rov_UDP.toRead[5]))
+        time.sleep(0.001)
+
+

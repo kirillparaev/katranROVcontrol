@@ -3,7 +3,7 @@ import UDP
 from ui import *
 from threading import Thread
 import ExtendedUI
-import resources_rc  # иконки
+import resources_rc
 
 
 def inputHandling():
@@ -15,6 +15,7 @@ def inputHandling():
             if state:
                 rov_UDP.formPacket(state)
                 rov_UDP.sendPacket()
+                rov_UDP.receivePacket()
                 window.debug_updatePacketUI(rov_UDP)
                 rov_UDP.clearPacket()
         else:
@@ -23,6 +24,7 @@ def inputHandling():
             while is_connected is False:
                 is_connected = XInput.get_connected()[0]
                 rov_UDP.sendPacket()
+                rov_UDP.receivePacket()
                 window.debug_updatePacketUI(rov_UDP)
                 rov_UDP.clearPacket()
 
@@ -34,14 +36,12 @@ if __name__ == "__main__":
         pad = XInput.get_state(0)
     # прикрутить ввод ip адреса и порта
     rov_UDP = UDP.UDPConnection("192.168.0.177", 8080)
-    # rov_UDP = UDP.UDPConnection("127.0.0.1", 127) # for debugging purposes
 
     app = QtWidgets.QApplication(sys.argv)
     mainWindow = QtWidgets.QMainWindow()
     window = ExtendedUI.ExtendedUI()
     window.setupUi(mainWindow)
     mainWindow.show()
-    # mainWindow.showFullScreen()
     inputStream = Thread(target=inputHandling, args=(), daemon=True)
     inputStream.start()
 
