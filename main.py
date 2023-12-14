@@ -14,8 +14,9 @@ def inputHandling():
             window.updateUI(state)
             if state:
                 rov_UDP.formPacket(state)
+                rov_UDP.convertPacket()
                 rov_UDP.sendPacket()
-                rov_UDP.receivePacket()
+                #rov_UDP.receivePacket()
                 window.debug_updatePacketUI(rov_UDP)
                 rov_UDP.clearPacket()
         else:
@@ -24,7 +25,7 @@ def inputHandling():
             while is_connected is False:
                 is_connected = XInput.get_connected()[0]
                 rov_UDP.sendPacket()
-                rov_UDP.receivePacket()
+                #rov_UDP.receivePacket()
                 window.debug_updatePacketUI(rov_UDP)
                 rov_UDP.clearPacket()
 

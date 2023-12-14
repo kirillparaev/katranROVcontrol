@@ -28,13 +28,28 @@ class ExtendedUI(Ui_MainWindow):
     def exit(self):
         sys.exit(0)
 
+    def minimizeWindow(self, MainWindow):
+        MainWindow.showMinimized()
 
+    def maximizeWindow(self, MainWindow):
+        MainWindow.showMaximized()
+        self.btn_maximize.hide()
+        self.btn_restore.show()
+
+    def restoreWindow(self, MainWindow):
+        MainWindow.showNormal()
+        self.btn_restore.hide()
+        self.btn_maximize.show()
 
     def setupUi(self, MainWindow):
         super().setupUi(MainWindow)
+        self.btn_restore.hide()
         self.btnCameraTab.clicked.connect(self.SwitchTabCamera)
         self.btnDebugTab.clicked.connect(self.SwitchTabDebug)
         self.btn_close.clicked.connect(self.exit)
+        self.btn_minimize.clicked.connect(lambda: self.minimizeWindow(MainWindow))
+        self.btn_maximize.clicked.connect(lambda: self.maximizeWindow(MainWindow))
+        self.btn_restore.clicked.connect(lambda: self.restoreWindow(MainWindow))
         # окно без рамки
         MainWindow.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
         MainWindow.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
