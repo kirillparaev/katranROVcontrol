@@ -18,8 +18,8 @@ class UDPConnection:
         горизонтальные 1-4 - [2-5]
         манипулятор - [6-7]
         '''
-        self.rearCoefficient = 0.0
-        self.frontCoefficient = 0.0
+        self.rearCoefficient = array('f', [0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+        self.frontCoefficient = array('f', [0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
         self.useNewFormingMethod = True  # новый метод счёта тяг
         self.msgFrom = self.toWrite.tobytes()
         self.prevPacket = self.msgFrom
@@ -144,50 +144,44 @@ class UDPConnection:
 
     def newFormPacket(self, state):
         if state.Gamepad.wButtons & 0b1000000000000000:  # треугольник\Y - поднять робота вверх (приоритет)
-            self.toWrite[0] = 127
-            self.toWrite[1] = 127
+            self.frontCoefficient[0] = 1.0
+            self.frontCoefficient[1] = 1.0
         elif state.Gamepad.wButtons & 0b0001000000000000:  # крестик\A - погрузить робота
-            self.toWrite[0] = 25
-            self.toWrite[1] = 25
+            self.rearCoefficient[0] = 1.0
+            self.rearCoefficient[1] = 1.0
         else:
-            self.toWrite[0] = 91
-            self.toWrite[1] = 91
+            self.frontCoefficient[0] = 0.0
+            self.rearCoefficient[0] = 0.0
+            self.frontCoefficient[1] = 0.0
+            self.rearCoefficient[1] = 0.0
 
         if state.Gamepad.wButtons & 0b0000001000000000:  # R1\RB - поворот вокруг своей оси направо
-            self.toWrite[2] = 127  # вращение боковых движителей в этом и следующем if
-            self.toWrite[3] = 127
+            self.frontCoefficient[2] = 1.0  # вращение боковых движителей в этом и следующем if
+            self.frontCoefficient[3] = 1.0
         else:
-            self.toWrite[2] = 91
-            self.toWrite[3] = 91
+            self.frontCoefficient[2] = 0.0
+            self.rearCoefficient[2] = 0.0
+            self.frontCoefficient[3] = 0.0
+            self.rearCoefficient[3] = 0.0
 
         if state.Gamepad.wButtons & 0b0000000100000000:  # L1\LB - поворот вокруг своей оси налево
-            self.toWrite[4] = 127
-            self.toWrite[5] = 127
+            self.frontCoefficient[4] = 1.0
+            self.frontCoefficient[5] = 1.0
         else:
-            self.toWrite[4] = 91
-            self.toWrite[5] = 91
+            self.frontCoefficient[4] = 0.0
+            self.rearCoefficient[4] = 0.0
+            self.frontCoefficient[5] = 0.0
+            self.rearCoefficient[5] = 0.0
 
         if state.Gamepad.bRightTrigger:
-            right_trigger = int((state.Gamepad.bRightTrigger / 255) * 36)
             for i in range(2, 6):
-                self.toWrite[i] = self.toWrite[i] + right_trigger
-            '''
-            self.toWrite[2] = (91 + right_trigger)
-            self.toWrite[3] = (91 + right_trigger)
-            self.toWrite[4] = (91 + right_trigger)
-            self.toWrite[5] = (91 + right_trigger)
-            '''
+                self.frontCoefficient[i] = (state.Gamepad.bRightTrigger / 255)
+            # от 2 до 5 включительно
 
         if state.Gamepad.bLeftTrigger:
-            left_trigger = int((state.Gamepad.bLeftTrigger / 255) * 66)
             for i in range(2, 6):
-                self.toWrite[i] = self.toWrite[i] - left_trigger
-            '''
-            self.toWrite[2] = (91 - left_trigger)
-            self.toWrite[3] = (91 - left_trigger)
-            self.toWrite[4] = (91 - left_trigger)
-            self.toWrite[5] = (91 - left_trigger)
-            '''
+                self.rearCoefficient[i] = (state.Gamepad.bLeftTrigger / 255)
+            # от 2 до 5 включительно
 
         if state.Gamepad.wButtons & 2:
             # вниз - закрыть манипулятор
@@ -208,12 +202,13 @@ class UDPConnection:
             self.toWrite[7] = 1
 
         if state.Gamepad.wButtons & 16384: # квадрат и круг - стабилизация тангажа
-            self.toWrite[0] = 127
-            self.toWrite[1] = 25
+            self.frontCoefficient[0] = 1.0
+            self.rearCoefficient[1] = 1.0
         elif state.Gamepad.wButtons & 8192:
-            self.toWrite[0] = 25
-            self.toWrite[1] = 127
+            self.rearCoefficient[0] = 1.0
+            self.frontCoefficient[1] = 1.0
 
+        '''
         if state.Gamepad.sThumbLX:
             if state.Gamepad.sThumbLX > 10000:
                 if self.toWrite[4] > 91 and self.toWrite[5] > 91 and not state.Gamepad.wButtons & 0b0000001000000000:
@@ -229,6 +224,8 @@ class UDPConnection:
                 elif state.Gamepad.bLeftTrigger:
                     self.toWrite[4] = self.toWrite[4] + abs(int(state.Gamepad.sThumbLX / 32768 * 32))
                     self.toWrite[5] = self.toWrite[5] + abs(int(state.Gamepad.sThumbLX / 32768 * 32))
+        '''
 
     def convertPacket(self):
-        pass
+        for i in range(0, 6):
+            self.toWrite[i] = int(self.toWrite[i] + (36 * self.frontCoefficient[i]) - (66 * self.rearCoefficient[i]))

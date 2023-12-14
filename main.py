@@ -14,7 +14,6 @@ def inputHandling():
             window.updateUI(state)
             if state:
                 rov_UDP.formPacket(state)
-                rov_UDP.convertPacket()
                 rov_UDP.sendPacket()
                 #rov_UDP.receivePacket()
                 window.debug_updatePacketUI(rov_UDP)
