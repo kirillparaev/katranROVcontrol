@@ -1,5 +1,8 @@
 <RCC>
   <qresource prefix="icons">
+    <file>icons/Robo.png</file>
+    <file>icons/katran.png</file>
+    <file>icons/KATRAN.png</file>
     <file>icons/cil-3d.png</file>
     <file>icons/cil-4k.png</file>
     <file>icons/cil-account-logout.png</file>

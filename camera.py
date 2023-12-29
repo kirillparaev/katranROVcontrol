@@ -1,11 +1,13 @@
+import numpy as np
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 import cv2
-
+from vidstab import VidStab, layer_blend
+import numpy as np
+import time
 
 class Worker1(QThread):  # камера
     ImageUpdate = pyqtSignal(QImage)
-
     def run(self):
         self.ThreadActive = True
         Capture = cv2.VideoCapture(0, cv2.CAP_DSHOW)

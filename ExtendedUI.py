@@ -28,13 +28,28 @@ class ExtendedUI(Ui_MainWindow):
     def exit(self):
         sys.exit(0)
 
+    def minimizeWindow(self, MainWindow):
+        MainWindow.showMinimized()
 
+    def maximizeWindow(self, MainWindow):
+        MainWindow.showMaximized()
+        self.btn_maximize.hide()
+        self.btn_restore.show()
+
+    def restoreWindow(self, MainWindow):
+        MainWindow.showNormal()
+        self.btn_restore.hide()
+        self.btn_maximize.show()
 
     def setupUi(self, MainWindow):
         super().setupUi(MainWindow)
+        self.btn_restore.hide()
         self.btnCameraTab.clicked.connect(self.SwitchTabCamera)
         self.btnDebugTab.clicked.connect(self.SwitchTabDebug)
         self.btn_close.clicked.connect(self.exit)
+        self.btn_minimize.clicked.connect(lambda: self.minimizeWindow(MainWindow))
+        self.btn_maximize.clicked.connect(lambda: self.maximizeWindow(MainWindow))
+        self.btn_restore.clicked.connect(lambda: self.restoreWindow(MainWindow))
         # окно без рамки
         MainWindow.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
         MainWindow.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
@@ -97,3 +112,19 @@ class ExtendedUI(Ui_MainWindow):
         self.label_Servo1Packet.setText(str(rov_UDP.toWrite[6]))
         time.sleep(0.001)
         self.label_Servo2Packet.setText(str(rov_UDP.toWrite[7]))
+        time.sleep(0.001)
+
+        self.packet_x.setText(str(rov_UDP.toRead[0]))
+        time.sleep(0.001)
+        self.packet_y.setText(str(rov_UDP.toRead[1]))
+        time.sleep(0.001)
+        self.packet_z.setText(str(rov_UDP.toRead[2]))
+        time.sleep(0.001)
+        self.packet_depth.setText(str(rov_UDP.toRead[3]))
+        time.sleep(0.001)
+        self.packet_emp1.setText(str(rov_UDP.toRead[4]))
+        time.sleep(0.001)
+        self.packet_emp2.setText(str(rov_UDP.toRead[5]))
+        time.sleep(0.001)
+
+

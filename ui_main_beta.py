@@ -13,7 +13,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setEnabled(True)
-        MainWindow.resize(788, 664)
+        MainWindow.resize(955, 875)
         MainWindow.setMinimumSize(QtCore.QSize(640, 480))
         MainWindow.setStyleSheet("color:rgb(42, 42, 42)")
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
@@ -653,6 +653,9 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.dashboard.setCurrentIndex(1)
+        self.btn_minimize.clicked.connect(MainWindow.showMinimized) # type: ignore
+        self.btn_maximize.clicked.connect(MainWindow.showFullScreen) # type: ignore
+        self.btn_restore.clicked.connect(MainWindow.showNormal) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
