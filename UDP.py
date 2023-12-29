@@ -208,24 +208,6 @@ class UDPConnection:
             self.rearCoefficient[0] = 1.0
             self.frontCoefficient[1] = 1.0
 
-        '''
-        if state.Gamepad.sThumbLX:
-            if state.Gamepad.sThumbLX > 10000:
-                if self.toWrite[4] > 91 and self.toWrite[5] > 91 and not state.Gamepad.wButtons & 0b0000001000000000:
-                    self.toWrite[4] = self.toWrite[4] - abs(int(state.Gamepad.sThumbLX / 32768 * 32))
-                    self.toWrite[5] = self.toWrite[5] - abs(int(state.Gamepad.sThumbLX / 32768 * 32))
-                elif state.Gamepad.bLeftTrigger:
-                    self.toWrite[2] = self.toWrite[2] + abs(int(state.Gamepad.sThumbLX / 32768 * 32))
-                    self.toWrite[3] = self.toWrite[3] + abs(int(state.Gamepad.sThumbLX / 32768 * 32))
-            elif state.Gamepad.sThumbLX < -10000:
-                if self.toWrite[2] > 91 and self.toWrite[3] > 91 and not state.Gamepad.wButtons & 0b0000000100000000:
-                    self.toWrite[2] = self.toWrite[2] - abs(int(state.Gamepad.sThumbLX / 32768 * 32))
-                    self.toWrite[3] = self.toWrite[3] - abs(int(state.Gamepad.sThumbLX / 32768 * 32))
-                elif state.Gamepad.bLeftTrigger:
-                    self.toWrite[4] = self.toWrite[4] + abs(int(state.Gamepad.sThumbLX / 32768 * 32))
-                    self.toWrite[5] = self.toWrite[5] + abs(int(state.Gamepad.sThumbLX / 32768 * 32))
-        '''
-
     def convertPacket(self):
         for i in range(0, 6):
             self.toWrite[i] = int(self.toWrite[i] + (36 * self.frontCoefficient[i]) - (66 * self.rearCoefficient[i]))

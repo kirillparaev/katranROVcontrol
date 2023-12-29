@@ -1,10 +1,37 @@
-import XInput
+import sys
+if sys.platform == 'win32':
+    import XInput
+elif sys.platform == 'linux':
+    import gamepad_linux
 import UDP
 from ui import *
 from threading import Thread
 import ExtendedUI
 import resources_rc
 
+def linux_inputHandling():
+    rov_UDP.sendPacket()
+    pad = gamepad_linux.Gamepad_linux()
+    pad.startBackgroundUpdates()
+    while True:
+        if gamepad_linux.available():
+            state = pad.convertState() # сейчас здесь
+            window.updateUI(state)
+            if state:
+                rov_UDP.formPacket(state)
+                rov_UDP.sendPacket()
+                # rov_UDP.receivePacket()
+                window.debug_updatePacketUI(rov_UDP)
+                rov_UDP.clearPacket()
+        else:
+            window.label_padNotDetected.setText("!!! Геймпад не обнаружен !!!")
+            is_connected = gamepad_linux.available()
+            while is_connected is False:
+                is_connected = gamepad_linux.available()
+                rov_UDP.sendPacket()
+                # rov_UDP.receivePacket()
+                window.debug_updatePacketUI(rov_UDP)
+                rov_UDP.clearPacket()
 
 def inputHandling():
     rov_UDP.sendPacket()
@@ -30,19 +57,20 @@ def inputHandling():
 
 
 if __name__ == "__main__":
-    import sys
 
-    if XInput.get_connected()[0]:
-        pad = XInput.get_state(0)
     # прикрутить ввод ip адреса и порта
     rov_UDP = UDP.UDPConnection("192.168.0.177", 8080)
+    # rov_UDP = UDP.UDPConnection("127.0.0.1", 8080) # local debug
 
     app = QtWidgets.QApplication(sys.argv)
     mainWindow = QtWidgets.QMainWindow()
     window = ExtendedUI.ExtendedUI()
     window.setupUi(mainWindow)
     mainWindow.show()
-    inputStream = Thread(target=inputHandling, args=(), daemon=True)
-    inputStream.start()
-
+    if sys.platform == 'win32':
+        inputStream = Thread(target=inputHandling, args=(), daemon=True)
+        inputStream.start()
+    elif sys.platform == 'linux':
+        inputStream = Thread(target=linux_inputHandling, args=(), daemon=True)
+        inputStream.start()
     sys.exit(app.exec())
