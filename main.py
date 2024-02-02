@@ -15,12 +15,12 @@ def linux_inputHandling():
     pad.startBackgroundUpdates()
     while True:
         if gamepad_linux.available():
-            state = pad.convertState() # сейчас здесь
+            state = pad.convertState()
             window.updateUI(state)
             if state:
                 rov_UDP.formPacket(state)
+                rov_UDP.receivePacket()
                 rov_UDP.sendPacket()
-                # rov_UDP.receivePacket()
                 window.debug_updatePacketUI(rov_UDP)
                 rov_UDP.clearPacket()
         else:
@@ -28,8 +28,8 @@ def linux_inputHandling():
             is_connected = gamepad_linux.available()
             while is_connected is False:
                 is_connected = gamepad_linux.available()
+                rov_UDP.receivePacket()
                 rov_UDP.sendPacket()
-                # rov_UDP.receivePacket()
                 window.debug_updatePacketUI(rov_UDP)
                 rov_UDP.clearPacket()
 
@@ -41,8 +41,8 @@ def inputHandling():
             window.updateUI(state)
             if state:
                 rov_UDP.formPacket(state)
+                rov_UDP.receivePacket()
                 rov_UDP.sendPacket()
-                #rov_UDP.receivePacket()
                 window.debug_updatePacketUI(rov_UDP)
                 rov_UDP.clearPacket()
         else:
@@ -50,8 +50,8 @@ def inputHandling():
             is_connected = XInput.get_connected()[0]
             while is_connected is False:
                 is_connected = XInput.get_connected()[0]
+                rov_UDP.receivePacket()
                 rov_UDP.sendPacket()
-                #rov_UDP.receivePacket()
                 window.debug_updatePacketUI(rov_UDP)
                 rov_UDP.clearPacket()
 

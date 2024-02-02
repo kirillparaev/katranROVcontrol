@@ -5,8 +5,10 @@ from array import *
 class UDPConnection:
     def __init__(self, remoteIP, remotePort):
         self.UDPClientSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        # добавить сокет на приём
         self.serverAddressPort = (remoteIP, remotePort)
+        self.UDPServerSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.clientAddressPort = ("192.168.100.9", 8888)
+        self.UDPServerSocket.bind(self.clientAddressPort)
         self.bufferSize = 1024
         self.hasSentFirstPacket = False
         self.isInDebugMode = False
@@ -23,32 +25,31 @@ class UDPConnection:
         self.useNewFormingMethod = True  # новый метод счёта тяг
         self.msgFrom = self.toWrite.tobytes()
         self.prevPacket = self.msgFrom
-        self.receivedPacket = None  # добавляем новую переменную
-        self.toRead = array('B', [0, 0, 0, 0, 0, 0])
+        self.receivedPacket = array('b', [-1, -1, -1, -1, -1, -1])
 
     def sendPacket(self):
         self.convertPacket()
         if not self.hasSentFirstPacket:
-            for i in range(5):
+            # TODO пофиксить взаимоожидание пакета
+            for i in range(1):
                 self.UDPClientSocket.sendto(self.msgFrom, self.serverAddressPort)
             self.hasSentFirstPacket = True
         elif self.msgFrom == self.prevPacket:
-            return
+            self.UDPClientSocket.sendto(self.msgFrom, self.serverAddressPort)
+            self.hasSentFirstPacket = True
         else:
             self.UDPClientSocket.sendto(self.msgFrom, self.serverAddressPort)
         self.prevPacket = self.msgFrom
 
     def receivePacket(self):
-        data, addr = self.UDPClientSocket.recvfrom(6)
-        receivedPacket = array('B', data)
-        if receivedPacket is None:
-            receivedPacket = array('B', [-1, -1, -1, -1, -1, -1])
-        return receivedPacket
+        data, addr = self.UDPServerSocket.recvfrom(8)
+        self.receivedPacket = array('B', data)
+        if self.receivedPacket is None:
+            self.receivedPacket = array('B', [-1, -1, -1, -1, -1, -1])
 
     def clearPacket(self):
         self.msgFrom = self.toWrite.tobytes()
         self.toWrite = array('B', [91, 91, 91, 91, 91, 91, self.toWrite[6], self.toWrite[7]])
-        self.toRead = array('B', [0, 0, 0, 0, 0, 0])
 
     def formPacket(self, state):
         if self.useNewFormingMethod:
