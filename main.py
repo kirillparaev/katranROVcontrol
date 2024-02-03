@@ -1,4 +1,5 @@
 import sys
+
 if sys.platform == 'win32':
     import XInput
 elif sys.platform == 'linux':
@@ -8,6 +9,7 @@ from ui import *
 from threading import Thread
 import ExtendedUI
 import resources_rc
+
 
 def linux_inputHandling():
     rov_UDP.sendPacket()
@@ -33,6 +35,7 @@ def linux_inputHandling():
                 window.debug_updatePacketUI(rov_UDP)
                 rov_UDP.clearPacket()
 
+
 def inputHandling():
     rov_UDP.sendPacket()
     while True:
@@ -57,11 +60,9 @@ def inputHandling():
 
 
 if __name__ == "__main__":
-
     # прикрутить ввод ip адреса и порта
     rov_UDP = UDP.UDPConnection("192.168.0.177", 8080)
     # rov_UDP = UDP.UDPConnection("127.0.0.1", 8080) # local debug
-
     app = QtWidgets.QApplication(sys.argv)
     mainWindow = QtWidgets.QMainWindow()
     window = ExtendedUI.ExtendedUI()
