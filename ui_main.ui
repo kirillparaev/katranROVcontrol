@@ -2,12 +2,15 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>686</width>
-    <height>557</height>
+    <width>845</width>
+    <height>662</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -19,8 +22,14 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">color:rgb(42, 42, 42)</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="drop_shadow_layout">
+   <property name="styleSheet">
+    <string notr="true">color:rgb(0, 49, 36)</string>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_9">
     <property name="spacing">
      <number>0</number>
     </property>
@@ -39,8 +48,9 @@
     <item>
      <widget class="QFrame" name="drop_shadow_frame">
       <property name="styleSheet">
-       <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(42, 44, 111, 255), stop:0.521368 rgba(28, 29, 73, 255));
-border-radius: 10px;</string>
+       <string notr="true">background-color: rgb(0, 27, 39);
+border-radius: 10px;
+</string>
       </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
@@ -48,10 +58,7 @@ border-radius: 10px;</string>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <property name="spacing">
-        <number>0</number>
-       </property>
+      <layout class="QGridLayout" name="gridLayout_2">
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -64,7 +71,7 @@ border-radius: 10px;</string>
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item>
+       <item row="0" column="0">
         <widget class="QFrame" name="title_bar">
          <property name="maximumSize">
           <size>
@@ -149,15 +156,18 @@ border-radius: 10px;</string>
                </property>
                <property name="font">
                 <font>
-                 <family>Roboto</family>
-                 <pointsize>14</pointsize>
+                 <family>Cambria</family>
+                 <pointsize>9</pointsize>
+                 <italic>false</italic>
+                 <bold>false</bold>
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">color: rgb(0, 144, 227);</string>
+                <string notr="true">color: rgb(255, 255, 255);
+font: 9pt &quot;Cambria&quot;;</string>
                </property>
                <property name="text">
-                <string>katranROVcontrols</string>
+                <string>ROV CONTROL</string>
                </property>
               </widget>
              </item>
@@ -391,7 +401,7 @@ QPushButton:hover {
          </layout>
         </widget>
        </item>
-       <item>
+       <item row="1" column="0">
         <widget class="QFrame" name="content_bar_and_styleSheet">
          <property name="styleSheet">
           <string notr="true">/*  ///////////////////////////////////////////////////// Check Box */
@@ -506,8 +516,14 @@ background-color: none;</string>
           </property>
           <item>
            <widget class="QStackedWidget" name="dashboard">
+            <property name="focusPolicy">
+             <enum>Qt::ClickFocus</enum>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="page_Camera">
              <layout class="QHBoxLayout" name="horizontalLayout_12">
@@ -1032,6 +1048,9 @@ background-color: none;</string>
                             <property name="enabled">
                              <bool>false</bool>
                             </property>
+                            <property name="styleSheet">
+                             <string notr="true"/>
+                            </property>
                             <property name="orientation">
                              <enum>Qt::Horizontal</enum>
                             </property>
@@ -1083,6 +1102,9 @@ background-color: none;</string>
                  <enum>QFrame::Raised</enum>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_8">
+                 <property name="bottomMargin">
+                  <number>12</number>
+                 </property>
                  <item>
                   <widget class="QFrame" name="frame_9">
                    <property name="minimumSize">
@@ -1121,15 +1143,18 @@ background-color: none;</string>
                      <widget class="QLabel" name="labelSendingPacket">
                       <property name="font">
                        <font>
+                        <family>MS Shell Dlg 2</family>
                         <pointsize>9</pointsize>
-                        <bold>true</bold>
+                        <italic>false</italic>
+                        <bold>false</bold>
                        </font>
                       </property>
                       <property name="styleSheet">
-                       <string notr="true">color: rgb(255, 255, 255);</string>
+                       <string notr="true">color: rgb(255, 255, 255);
+font: 9pt &quot;MS Shell Dlg 2&quot;;</string>
                       </property>
                       <property name="text">
-                       <string>Отправляемый пакет: </string>
+                       <string>Отправляемый пакет</string>
                       </property>
                       <property name="alignment">
                        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -1265,29 +1290,157 @@ background-color: none;</string>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_7">
                  <item>
-                  <widget class="QFrame" name="frame_11">
+                  <widget class="QFrame" name="frame_16">
+                   <property name="focusPolicy">
+                    <enum>Qt::StrongFocus</enum>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true"/>
+                   </property>
                    <property name="frameShape">
                     <enum>QFrame::StyledPanel</enum>
                    </property>
                    <property name="frameShadow">
                     <enum>QFrame::Raised</enum>
                    </property>
-                   <layout class="QHBoxLayout" name="horizontalLayout_9">
-                    <property name="spacing">
-                     <number>0</number>
-                    </property>
-                    <property name="leftMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="rightMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="bottomMargin">
-                     <number>0</number>
-                    </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_10">
+                    <item>
+                     <widget class="QFrame" name="frame_11">
+                      <property name="minimumSize">
+                       <size>
+                        <width>600</width>
+                        <height>85</height>
+                       </size>
+                      </property>
+                      <property name="focusPolicy">
+                       <enum>Qt::StrongFocus</enum>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true"/>
+                      </property>
+                      <property name="frameShape">
+                       <enum>QFrame::StyledPanel</enum>
+                      </property>
+                      <property name="frameShadow">
+                       <enum>QFrame::Raised</enum>
+                      </property>
+                      <layout class="QGridLayout" name="gridLayout">
+                       <item row="0" column="0">
+                        <spacer name="horizontalSpacer_7">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>236</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item row="1" column="6">
+                        <widget class="QLabel" name="packet_emp1">
+                         <property name="text">
+                          <string>00</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="0" colspan="2">
+                        <spacer name="horizontalSpacer_19">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>255</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item row="1" column="3">
+                        <widget class="QLabel" name="packet_y">
+                         <property name="text">
+                          <string>00</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="2">
+                        <widget class="QLabel" name="packet_x">
+                         <property name="text">
+                          <string>00</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="7">
+                        <widget class="QLabel" name="packet_emp2">
+                         <property name="text">
+                          <string>00</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="8">
+                        <spacer name="horizontalSpacer_18">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>248</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item row="1" column="4">
+                        <widget class="QLabel" name="packet_z">
+                         <property name="text">
+                          <string>00</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="8">
+                        <spacer name="horizontalSpacer_20">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>248</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item row="0" column="1" colspan="7">
+                        <widget class="QLabel" name="received_packet">
+                         <property name="text">
+                          <string>   Принимаемый пакет</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="5">
+                        <widget class="QLabel" name="packet_depth">
+                         <property name="text">
+                          <string>00</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QFrame" name="frame_18">
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                   <layout class="QHBoxLayout" name="horizontalLayout_16">
                     <item>
                      <widget class="QLabel" name="label_padNotDetected">
                       <property name="enabled">
@@ -1295,24 +1448,88 @@ background-color: none;</string>
                       </property>
                       <property name="font">
                        <font>
-                        <pointsize>15</pointsize>
+                        <family>Cambria</family>
+                        <pointsize>10</pointsize>
                         <italic>false</italic>
-                        <bold>true</bold>
+                        <bold>false</bold>
                        </font>
                       </property>
+                      <property name="styleSheet">
+                       <string notr="true">font: 10pt &quot;Cambria&quot;;</string>
+                      </property>
                       <property name="text">
-                       <string>!!! Геймпад не обнаружен !!!</string>
+                       <string>Геймпад не обнаружен</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <spacer name="horizontalSpacer_7">
+                     <widget class="QLabel" name="label_connectionNotDetected">
+                      <property name="text">
+                       <string>Нет соединения с аппаратом</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QFrame" name="frame_17">
+                   <property name="focusPolicy">
+                    <enum>Qt::StrongFocus</enum>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                   <layout class="QHBoxLayout" name="horizontalLayout_15">
+                    <item>
+                     <spacer name="horizontalSpacer_21">
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
                       <property name="sizeHint" stdset="0">
                        <size>
-                        <width>40</width>
+                        <width>318</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label">
+                      <property name="focusPolicy">
+                       <enum>Qt::NoFocus</enum>
+                      </property>
+                      <property name="frameShape">
+                       <enum>QFrame::Box</enum>
+                      </property>
+                      <property name="lineWidth">
+                       <number>1</number>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="textFormat">
+                       <enum>Qt::AutoText</enum>
+                      </property>
+                      <property name="pixmap">
+                       <pixmap resource="resources.qrc">:/icons/icons/Robo.png</pixmap>
+                      </property>
+                      <property name="scaledContents">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_22">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>298</width>
                         <height>20</height>
                        </size>
                       </property>
@@ -1348,8 +1565,8 @@ background-color: none;</string>
    <slot>showMinimized()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>602</x>
-     <y>22</y>
+     <x>623</x>
+     <y>32</y>
     </hint>
     <hint type="destinationlabel">
      <x>233</x>
@@ -1364,8 +1581,8 @@ background-color: none;</string>
    <slot>showFullScreen()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>627</x>
-     <y>26</y>
+     <x>645</x>
+     <y>32</y>
     </hint>
     <hint type="destinationlabel">
      <x>464</x>
@@ -1380,8 +1597,8 @@ background-color: none;</string>
    <slot>showNormal()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>649</x>
-     <y>27</y>
+     <x>667</x>
+     <y>32</y>
     </hint>
     <hint type="destinationlabel">
      <x>349</x>
