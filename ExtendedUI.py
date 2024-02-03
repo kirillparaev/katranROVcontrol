@@ -97,6 +97,10 @@ class ExtendedUI(Ui_MainWindow):
             self.horizontalSlider_LT.setSliderPosition(state.Gamepad.bLeftTrigger)
 
     def debug_updatePacketUI(self, rov_UDP):
+        if rov_UDP.isConnectionEstablished:
+            self.label_connectionNotDetected.setText("")
+        else:
+            self.label_connectionNotDetected.setText("Нет соединения с аппаратом")
         time.sleep(0.02)  # задержка 20 мс
         self.packet_1st_byte.setText(str(rov_UDP.toWrite[0]))
         self.packet_2nd_byte.setText(str(rov_UDP.toWrite[1]))

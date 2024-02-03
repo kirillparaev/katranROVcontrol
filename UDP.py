@@ -7,8 +7,9 @@ class UDPConnection:
         self.UDPClientSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.serverAddressPort = (remoteIP, remotePort)
         self.UDPServerSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.clientAddressPort = ("192.168.100.9", 8888)
+        self.clientAddressPort = ("192.168.0.100", 8888)
         self.UDPServerSocket.bind(self.clientAddressPort)
+        self.UDPServerSocket.settimeout(2.8)
         self.bufferSize = 1024
         self.hasSentFirstPacket = False
         self.isInDebugMode = False
@@ -26,6 +27,7 @@ class UDPConnection:
         self.msgFrom = self.toWrite.tobytes()
         self.prevPacket = self.msgFrom
         self.receivedPacket = array('b', [-1, -1, -1, -1, -1, -1])
+        self.isConnectionEstablished = False
 
     def sendPacket(self):
         self.convertPacket()
@@ -42,10 +44,14 @@ class UDPConnection:
         self.prevPacket = self.msgFrom
 
     def receivePacket(self):
-        data, addr = self.UDPServerSocket.recvfrom(8)
-        self.receivedPacket = array('B', data)
-        if self.receivedPacket is None:
-            self.receivedPacket = array('B', [-1, -1, -1, -1, -1, -1])
+        try:
+            data, addr = self.UDPServerSocket.recvfrom(6)
+            self.isConnectionEstablished = True
+            self.receivedPacket = array('B', data)
+        except TimeoutError as e:
+            self.receivedPacket = array('b', [-1, -1, -1, -1, -1, -1])
+            self.isConnectionEstablished = False
+            return
 
     def clearPacket(self):
         self.msgFrom = self.toWrite.tobytes()
@@ -120,7 +126,7 @@ class UDPConnection:
         else:
             self.toWrite[7] = 1
 
-        if state.Gamepad.wButtons & 16384: # квадрат и круг - стабилизация тангажа
+        if state.Gamepad.wButtons & 16384:  # квадрат и круг - стабилизация тангажа
             self.toWrite[0] = 127
             self.toWrite[1] = 25
         elif state.Gamepad.wButtons & 8192:
@@ -202,7 +208,7 @@ class UDPConnection:
         else:
             self.toWrite[7] = 1
 
-        if state.Gamepad.wButtons & 16384: # квадрат и круг - стабилизация тангажа
+        if state.Gamepad.wButtons & 16384:  # квадрат и круг - стабилизация тангажа
             self.frontCoefficient[0] = 1.0
             self.rearCoefficient[1] = 1.0
         elif state.Gamepad.wButtons & 8192:
