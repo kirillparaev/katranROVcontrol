@@ -8,9 +8,8 @@ class UDPConnection:
         self.serverAddressPort = (remoteIP, remotePort)
         self.UDPServerSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.clientAddressPort = ("192.168.0.100", 8888)
-        self.UDPServerSocket.bind(self.clientAddressPort)
+        #self.UDPServerSocket.bind(self.clientAddressPort) # работает только если есть соединение, нужно обработать ошибку
         self.UDPServerSocket.settimeout(2.8)
-        self.bufferSize = 1024
         self.toWrite = array('B', [91, 91, 91, 91, 91, 91, 1, 1])
         '''
         вертикальные 1-2 - [0-1]
@@ -29,13 +28,14 @@ class UDPConnection:
 
     def receivePacket(self):
         try:
-            data, addr = self.UDPServerSocket.recvfrom(6)
+            data, addr = self.UDPServerSocket.recvfrom(18)
             self.isConnectionEstablished = True
-            self.receivedPacket = array('B', data)
+            self.receivedPacket = array('b', data)
+            # self.decodePacket(self.receivedPacket)
         except TimeoutError as e:
+            print(e)
             self.receivedPacket = array('b', [-1, -1, -1, -1, -1, -1])
             self.isConnectionEstablished = False
-            return
 
     def clearPacket(self):
         self.msgFrom = self.toWrite.tobytes()
