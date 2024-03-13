@@ -18,12 +18,12 @@ def linux_inputHandling():
     while True:
         if gamepad_linux.available():
             state = pad.convertState()
-            window.updateUI(state, rov_UDP)
+            window.updateUI(rov_UDP, state)
             if state:
                 rov_UDP.formPacket(state)
                 rov_UDP.receivePacket()
                 rov_UDP.sendPacket()
-                window.updateUI(state, rov_UDP)
+                window.updateUI(rov_UDP, state)
                 rov_UDP.clearPacket()
         else:
             window.label_padNotDetected.setText("Нет геймпада")
@@ -37,16 +37,17 @@ def linux_inputHandling():
 
 
 def inputHandling():
+    # введенные данные на регуляторы брать из ui и передавать в udp объект
     rov_UDP.sendPacket()
     while True:
         if XInput.get_connected()[0]:
             state = XInput.get_state(0)
-            window.updateUI(state, rov_UDP)
+            window.updateUI(rov_UDP, state)
             if state:
                 rov_UDP.formPacket(state)
                 rov_UDP.receivePacket()
                 rov_UDP.sendPacket()
-                window.updateUI(state, rov_UDP)
+                window.updateUI(rov_UDP, state)
                 rov_UDP.clearPacket()
         else:
             window.label_padNotDetected.setText("Нет геймпада")
@@ -61,7 +62,7 @@ def inputHandling():
 
 if __name__ == "__main__":
     # прикрутить ввод ip адреса и порта
-    rov_UDP = UDP.UDPConnection("192.168.0.177", 8080)
+    rov_UDP = UDP.UDPConnection("192.168.1.177", 8080)
     # rov_UDP = UDP.UDPConnection("127.0.0.1", 8080) # local debug
     app = QtWidgets.QApplication(sys.argv)
     mainWindow = QtWidgets.QMainWindow()

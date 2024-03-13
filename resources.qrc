@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="icons">
+    <file>pngs_to_include/DataGuru_ICON-white-1.png</file>
+    <file>pngs_to_include/USB-Gamepad-Transparent.png</file>
     <file>icons/Robo.png</file>
     <file>icons/katran.png</file>
     <file>icons/KATRAN.png</file>

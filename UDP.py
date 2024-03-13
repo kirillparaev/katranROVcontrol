@@ -7,9 +7,9 @@ class UDPConnection:
         self.UDPClientSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.serverAddressPort = (remoteIP, remotePort)
         self.UDPServerSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.clientAddressPort = ("192.168.0.100", 8888)
-        #self.UDPServerSocket.bind(self.clientAddressPort) # работает только если есть соединение, нужно обработать ошибку
-        self.UDPServerSocket.settimeout(2.8)
+        self.clientAddressPort = ("192.168.1.100", 8888)
+        #self.UDPServerSocket.bind(self.clientAddressPort) # НУЖНО ДЛЯ РАБОТЫ НО БЯЛТЬ работает только если есть соединение, нужно обработать ошибку
+        self.UDPServerSocket.settimeout(0.5)
         self.toWrite = array('B', [91, 91, 91, 91, 91, 91, 1, 1])
         '''
         вертикальные 1-2 - [0-1]

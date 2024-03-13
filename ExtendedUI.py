@@ -11,6 +11,20 @@ class ExtendedUI(Ui_MainWindow):
     # Класс-наследник окна, создаваемого qt designer.
     # Использовать для любых изменений класса-родителя.
 
+    # вкладки
+    def switchTabInput(self):
+        self.info_stackedWidget.setCurrentWidget(self.info_Page)
+
+    def switchTabControls(self):
+        self.info_stackedWidget.setCurrentWidget(self.PID_Page)
+
+    def submitCoefs(self):
+        self.coefsInput.append(int(self.P_coef_field.text()))
+        self.coefsInput.append(int(self.I_coef_field.text()))
+        self.coefsInput.append(int(self.D_coef_field.text()))
+        self.coefsInput.append(int(self.depth_coef_field.text()))
+        self.coefsInput.append(int(self.heading_coef_field.text()))
+
     # функции для работы с камерой
     def ImageUpdateSlot(self, Image):
         self.camera_feed.setPixmap(QPixmap.fromImage(Image).scaled(self.camera_feed.width(), self.camera_feed.height()))
@@ -36,11 +50,15 @@ class ExtendedUI(Ui_MainWindow):
 
     def setupUi(self, MainWindow):
         super().setupUi(MainWindow)
+        self.coefsInput = bytearray()
         self.btn_restore.hide()
         self.btn_close.clicked.connect(self.exit)
         self.btn_minimize.clicked.connect(lambda: self.minimizeWindow(MainWindow))
         self.btn_maximize.clicked.connect(lambda: self.maximizeWindow(MainWindow))
         self.btn_restore.clicked.connect(lambda: self.restoreWindow(MainWindow))
+        self.button_controlsTab.clicked.connect(lambda: self.switchTabInput())
+        self.button_tauTab.clicked.connect(lambda: self.switchTabControls())
+        self.buttonSubmitCoefs.clicked.connect(lambda: self.submitCoefs())
         # окно без рамки
         MainWindow.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
         MainWindow.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
