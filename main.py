@@ -37,7 +37,7 @@ def linux_inputHandling():
 
 
 def inputHandling():
-    # введенные данные на регуляторы брать из ui и передавать в udp объект
+    # TODO введенные данные на регуляторы брать из ui и передавать в udp объект
     rov_UDP.sendPacket()
     while True:
         if XInput.get_connected()[0]:
