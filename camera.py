@@ -24,9 +24,7 @@ class Worker1(QThread):  # камера
                 Image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 ConvertToQtFormat = QImage(Image.data, Image.shape[1], Image.shape[0],
                                            QImage.Format.Format_RGB888)
-                # image scales here
-                Pic = ConvertToQtFormat.scaled(1920, 1080, Qt.AspectRatioMode.KeepAspectRatio)
-                self.ImageUpdate.emit(Pic)
+                self.ImageUpdate.emit(ConvertToQtFormat)
 
     def stop(self):
         self.ThreadActive = False
